@@ -104,22 +104,20 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
 
     #
 
-    out_prompt_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
-        prompt=prompt,
+    out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
-    out_prompt_quality_scores_fileuri = str(out_prompt_quality_scores_filepath)
-
-    out_prompt_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
-    out_prompt_quality_scores_filepath.write_text("", encoding="utf-8")
+    out_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
+    out_quality_scores_filepath.write_text("", encoding="utf-8")
 
     for idx in sorted(scores, key=lambda x: scores[x], reverse=True)[:1]:
         _score = scores[idx] * 20 + 50
         # mean_score += _score / len(lines)
         # print(_score)
 
-        with open(out_prompt_quality_scores_fileuri, 'a+', encoding="utf-8") as f:
+        ### TODO: improve this logic -> convert the ".txt" to a pandas dataframe.
+        with open(str(out_quality_scores_filepath), 'a+', encoding="utf-8") as f:
             f.write(f'{_score:.1f}\t\t{prompt}\n')
 
 
