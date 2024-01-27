@@ -1,5 +1,6 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
 import argparse
+import os
 
 from pathlib import Path
 
@@ -32,6 +33,9 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
     print(source_result_objmodel_path)
     print("")
     print("")
+
+    ### TODO: improve this logic ...
+    os.system(f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name tmp')
 
 
 ###
