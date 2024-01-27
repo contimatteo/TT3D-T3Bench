@@ -110,6 +110,8 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
         assert_exists=False,
     )
     out_prompt_quality_scores_fileuri = str(out_prompt_quality_scores_filepath)
+
+    out_prompt_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
     out_prompt_quality_scores_filepath.write_text("", encoding="utf-8")
 
     for idx in sorted(scores, key=lambda x: scores[x], reverse=True)[:1]:
