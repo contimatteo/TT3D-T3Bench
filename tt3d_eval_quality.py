@@ -46,7 +46,7 @@ def main(model: str, prompt_filepath: Path, source_rootpath: Path, out_rootpath:
     assert out_rootpath.exists()
     assert out_rootpath.is_dir()
 
-    source_rootpath.mkdir(parents=True, exist_ok=True)
+    out_rootpath.mkdir(parents=True, exist_ok=True)
 
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
