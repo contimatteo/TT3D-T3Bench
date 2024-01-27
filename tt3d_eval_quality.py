@@ -34,8 +34,11 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
     print("")
     print("")
 
+    out_tag_dirname = "temp"
+    out_tagname_path = out_rootpath.joinpath(out_tag_dirname)
+
     ### TODO: improve this logic ...
-    os.system(f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name tmp')
+    os.system(f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_tagname_path)}')
 
 
 ###
