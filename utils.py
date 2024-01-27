@@ -270,8 +270,8 @@ class _Storage():
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
-        out_quality_path = out_rootpath.joinpath("quality")
-        out_quality_scores_path = out_quality_path.joinpath("scores")
+        out_scores_path = out_rootpath.joinpath("scores")
+        out_quality_scores_path = out_scores_path.joinpath("quality")
 
         if assert_exists:
             assert out_quality_scores_path.exists()
