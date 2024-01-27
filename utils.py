@@ -265,6 +265,43 @@ class _Storage():
 
         return out_prompt_renderings_path
 
+    @staticmethod
+    def build_quality_scores_path(
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        out_quality_path = out_rootpath.joinpath("quality")
+        out_quality_scores_path = out_quality_path.joinpath("scores")
+
+        if assert_exists:
+            assert out_quality_scores_path.exists()
+            assert out_quality_scores_path.is_dir()
+
+        return out_quality_scores_path
+
+    @classmethod
+    def build_prompt_quality_scores_filepath(
+        cls,
+        prompt: str,
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert "_" not in prompt
+
+        out_quality_scores_path = cls.build_quality_scores_path(
+            out_rootpath=out_rootpath,
+            assert_exists=False,
+        )
+
+        prompt_enc = Utils.Prompt.encode(prompt=prompt)
+        out_prompt_quality_scores_filepath = out_quality_scores_path.joinpath(f"{prompt_enc}.txt")
+
+        if assert_exists:
+            assert out_prompt_quality_scores_filepath.exists()
+            assert out_prompt_quality_scores_filepath.is_file()
+
+        return out_prompt_quality_scores_filepath
+
 
 ###
 

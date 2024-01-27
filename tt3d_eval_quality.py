@@ -2,6 +2,9 @@
 import argparse
 import os
 import shutil
+import ImageReward as RM
+import trimesh
+from PIL import Image
 
 from pathlib import Path
 
@@ -14,9 +17,8 @@ device = Utils.Cuda.init()
 ###
 
 
-def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath: Path, out_rootpath: Path):
+def _run_mesh_rendering_script(model: str, prompt: str, source_rootpath: Path, out_rootpath: Path):
     model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
-
     source_result_path = Utils.Storage.build_result_path_by_prompt(
         model_dirname=model_dirname,
         prompt=prompt,
@@ -42,15 +44,69 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
 
     print("")
     print("")
-    print(source_result_objmodel_path)
-    print(out_prompt_renderings_path)
-    print("")
-    print("")
-
+    print(prompt)
+    # print(source_result_objmodel_path)
+    # print(out_prompt_renderings_path)
     ### TODO: improve this logic ...
     os.system(
         f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
     )
+    print("")
+    print("")
+
+
+def _evaluate_quality(model: str, prompt: str, source_rootpath: Path, out_rootpath: Path):
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+        prompt=prompt,
+        out_rootpath=out_rootpath,
+        assert_exists=True,
+    )
+    out_prompt_renderings_uri = str(out_prompt_renderings_path)
+
+    #
+
+    RADIUS = 2.2  ### pylint: disable=invalid-name
+    model = RM.load("ImageReward-v1.0")
+    icosphere = trimesh.creation.icosphere(subdivisions=2, radius=RADIUS)
+
+    scores = {i: -114514 for i in range(len(icosphere.vertices))}
+
+    #
+
+    for idx in range(len(icosphere.vertices)):
+        for j in range(5):
+            img_path = f'{idx:03d}_{j}.png'
+            # convert color to PIL image
+            color = Image.open(os.path.join(out_prompt_renderings_uri, img_path))
+            reward = model.score(prompt, color)
+            scores[idx] = max(scores[idx], reward)
+
+    # convolute scores on the icosphere for 3 times
+    for _ in range(3):
+        new_scores = {}
+        for idx, v in enumerate(icosphere.vertices):
+            new_scores[idx] = scores[idx]
+            for n in icosphere.vertex_neighbors[idx]:
+                new_scores[idx] += scores[n]
+            new_scores[idx] /= (len(icosphere.vertex_neighbors[idx]) + 1)
+        scores = new_scores
+
+    #
+
+    out_prompt_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
+        prompt=prompt,
+        out_rootpath=out_rootpath,
+        assert_exists=False,
+    )
+    out_prompt_quality_scores_fileuri = str(out_prompt_quality_scores_filepath)
+
+    for idx in sorted(scores, key=lambda x: scores[x], reverse=True)[:1]:
+        _score = scores[idx] * 20 + 50
+        # mean_score += _score / len(lines)
+        # print(_score)
+
+        with open(out_prompt_quality_scores_fileuri, 'a+', encoding="utf-8") as f:
+            f.write(f'{_score:.1f}\t\t{prompt}\n')
 
 
 ###
@@ -73,7 +129,7 @@ def main(model: str, prompt_filepath: Path, source_rootpath: Path, out_rootpath:
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
-        _evaluate_quality_of_generated_obj(
+        _run_mesh_rendering_script(
             model=model,
             prompt=prompt,
             source_rootpath=source_rootpath,
