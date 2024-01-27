@@ -246,6 +246,25 @@ class _Storage():
 
         return result_export_obj_path
 
+    @staticmethod
+    def build_renderings_path_by_prompt(
+        prompt: str,
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert "_" not in prompt
+
+        out_renderings_path = out_rootpath.joinpath("renderings")
+
+        prompt_enc = Utils.Prompt.encode(prompt=prompt)
+        out_prompt_renderings_path = out_renderings_path.joinpath(prompt_enc)
+
+        if assert_exists:
+            assert out_prompt_renderings_path.exists()
+            assert out_prompt_renderings_path.is_dir()
+
+        return out_prompt_renderings_path
+
 
 ###
 

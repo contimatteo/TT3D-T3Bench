@@ -28,18 +28,23 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
         assert_exists=True,
     )
 
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+        prompt=prompt,
+        out_rootpath=out_rootpath,
+        assert_exists=False,
+    )
+
     print("")
     print("")
     print(source_result_objmodel_path)
+    print(out_prompt_renderings_path)
     print("")
     print("")
-
-    out_tag_dirname = "temp"
-    out_tagname_path = out_rootpath.joinpath(out_tag_dirname)
-    out_tagname_path.mkdir(parents=True, exist_ok=True)
 
     ### TODO: improve this logic ...
-    os.system(f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_tagname_path)}')
+    os.system(
+        f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    )
 
 
 ###
