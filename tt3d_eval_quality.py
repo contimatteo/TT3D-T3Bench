@@ -36,6 +36,7 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
 
     out_tag_dirname = "temp"
     out_tagname_path = out_rootpath.joinpath(out_tag_dirname)
+    out_tagname_path.mkdir(parents=True, exist_ok=True)
 
     ### TODO: improve this logic ...
     os.system(f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_tagname_path)}')
