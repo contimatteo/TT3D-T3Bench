@@ -17,7 +17,13 @@ device = Utils.Cuda.init()
 ###
 
 
-def _run_mesh_rendering_script(model: str, prompt: str, source_rootpath: Path, out_rootpath: Path):
+def _run_mesh_rendering_script(
+    model: str,
+    prompt: str,
+    source_rootpath: Path,
+    out_rootpath: Path,
+    skip_existing: bool,
+) -> None:
     model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
     source_result_path = Utils.Storage.build_result_path_by_prompt(
         model_dirname=model_dirname,
@@ -37,7 +43,12 @@ def _run_mesh_rendering_script(model: str, prompt: str, source_rootpath: Path, o
         assert_exists=False,
     )
 
-    ### TODO: improve this logic with a {skip_existing} flag ...
+    if skip_existing and out_prompt_renderings_path.exists():
+        print("")
+        print("Renderings already exists --> ", out_prompt_renderings_path)
+        print("")
+        return
+
     if out_prompt_renderings_path.exists():
         shutil.rmtree(out_prompt_renderings_path)
     out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
@@ -55,7 +66,7 @@ def _run_mesh_rendering_script(model: str, prompt: str, source_rootpath: Path, o
     print("")
 
 
-def _evaluate_quality(model: str, prompt: str, source_rootpath: Path, out_rootpath: Path):
+def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
@@ -112,7 +123,13 @@ def _evaluate_quality(model: str, prompt: str, source_rootpath: Path, out_rootpa
 ###
 
 
-def main(model: str, prompt_filepath: Path, source_rootpath: Path, out_rootpath: Path):
+def main(
+    model: str,
+    prompt_filepath: Path,
+    source_rootpath: Path,
+    out_rootpath: Path,
+    skip_existing_renderings: bool,
+) -> None:
     assert isinstance(model, str)
     assert len(model) > 0
     assert model in Utils.Configs.MODELS_SUPPORTED
@@ -120,10 +137,13 @@ def main(model: str, prompt_filepath: Path, source_rootpath: Path, out_rootpath:
     assert isinstance(out_rootpath, Path)
     assert out_rootpath.exists()
     assert out_rootpath.is_dir()
+    assert isinstance(skip_existing_renderings, bool)
 
     out_rootpath.mkdir(parents=True, exist_ok=True)
 
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
+
+    #
 
     for prompt in prompts:
         if not isinstance(prompt, str) or len(prompt) < 2:
@@ -134,7 +154,10 @@ def main(model: str, prompt_filepath: Path, source_rootpath: Path, out_rootpath:
             prompt=prompt,
             source_rootpath=source_rootpath,
             out_rootpath=out_rootpath,
+            skip_existing=skip_existing_renderings,
         )
+
+        _evaluate_quality(model=model, prompt=prompt, out_rootpath=out_rootpath)
 
 
 ###
@@ -151,6 +174,7 @@ if __name__ == '__main__':
     parser.add_argument('--prompt-file', type=Path, required=True)
     parser.add_argument('--source-path', type=Path, required=True)
     parser.add_argument('--out-path', type=Path, required=True)
+    parser.add_argument("--skip-existing-renderings", action="store_true", default=False)
 
     args = parser.parse_args()
 
@@ -161,4 +185,5 @@ if __name__ == '__main__':
         prompt_filepath=args.prompt_file,
         source_rootpath=args.source_path,
         out_rootpath=args.out_path,
+        skip_existing_renderings=args.skip_existing_renderings,
     )
