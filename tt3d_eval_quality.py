@@ -1,6 +1,7 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
 import argparse
 import os
+import shutil
 
 from pathlib import Path
 
@@ -33,6 +34,10 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
+
+    ### TODO: improve this logic with a {skip_existing} flag ...
+    shutil.rmtree(out_prompt_renderings_path)
+    out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
 
     print("")
     print("")
