@@ -106,10 +106,8 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
 
     out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
         out_rootpath=out_rootpath,
-        assert_exists=False,
+        assert_exists=True,
     )
-    out_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
-    out_quality_scores_filepath.write_text("", encoding="utf-8")
 
     for idx in sorted(scores, key=lambda x: scores[x], reverse=True)[:1]:
         _score = scores[idx] * 20 + 50
@@ -142,9 +140,16 @@ def main(
 
     out_rootpath.mkdir(parents=True, exist_ok=True)
 
-    prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
+    out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
+        out_rootpath=out_rootpath,
+        assert_exists=False,
+    )
+    out_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
+    out_quality_scores_filepath.write_text("", encoding="utf-8")
 
     #
+
+    prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
     for prompt in prompts:
         if not isinstance(prompt, str) or len(prompt) < 2:
