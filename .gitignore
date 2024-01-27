@@ -3,3 +3,6 @@ outputs_mesh_t3
 outputs_caption
 result
 temp
+
+**/__pycache__/
+**/temp/
