@@ -1,6 +1,7 @@
 import os
 # switch to "osmesa" or "egl" before loading pyrender
-os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+# os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 import numpy as np
 import pyrender
@@ -12,6 +13,7 @@ from tqdm import tqdm
 import imageio
 
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, required=True)
 parser.add_argument('--name', type=str)
@@ -22,7 +24,7 @@ obj_path = args.path
 # load mesh
 try:
     mesh = trimesh.load(obj_path)
-except:
+except:  ### pylint: disable=bare-except
     icosphere = trimesh.creation.icosphere(subdivisions=2)
     for idx, v in enumerate(icosphere.vertices):
         for cam_idx in range(5):
@@ -79,3 +81,4 @@ for idx, v in tqdm(enumerate(icosphere.vertices)):
         color = Image.fromarray(color.astype(np.uint8))
         imageio.imwrite(f'{args.name}/{idx:03d}_{cam_idx}.png', color)
 
+        r.delete()
