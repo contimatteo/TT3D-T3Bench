@@ -36,7 +36,8 @@ def _evaluate_quality_of_generated_obj(model: str, prompt: str, source_rootpath:
     )
 
     ### TODO: improve this logic with a {skip_existing} flag ...
-    shutil.rmtree(out_prompt_renderings_path)
+    if out_prompt_renderings_path.exists():
+        shutil.rmtree(out_prompt_renderings_path)
     out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
 
     print("")
