@@ -10,7 +10,10 @@ pip install open3d trimesh Pillow backoff tqdm matplotlib
 pip install image-reward
 pip install git+https://github.com/openai/CLIP.git
 
-pip install -q omegaconf iopath decord webdataset einops pycocoevalcap
-pip install --no-deps salesforce-lavis
+# pip install -q omegaconf iopath decord webdataset einops pycocoevalcap
+# pip install --no-deps salesforce-lavis
+pip install salesforce-lavis
 
-pip install python-dotenv opencv-python
+pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless 
+pip install opencv-python==4.7.0.72
+pip install python-dotenv spacy
