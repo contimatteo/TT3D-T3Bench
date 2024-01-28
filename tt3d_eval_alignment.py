@@ -167,7 +167,7 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
 
     ### TODO: improve this logic -> convert the ".txt" to a pandas dataframe.
     with open(str(out_alignment_captions_filepath), 'a+', encoding="utf-8") as f:
-        f.write(prompt + ':' + captions_merged_text + '\n')
+        f.write(prompt + ' -> ' + captions_merged_text + '\n')
 
 
 def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path) -> None:
