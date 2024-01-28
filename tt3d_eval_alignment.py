@@ -1,4 +1,8 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+
 import argparse
 import os
 import shutil
@@ -17,8 +21,16 @@ from utils import Utils
 
 device = Utils.Cuda.init()
 
-OPENAI_API_KEY = "PLEASE USE YOUR OWN API KEY"
-OPENAI_MODEL_NAME = "gpt-4"
+AZURE_OPENAI_KEY = os.environ.get("AZURE_OPENAI_KEY")
+AZURE_OPENAI_DEPLOYMENT = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
+AZURE_OPENAI_MODEL = os.environ.get("AZURE_OPENAI_MODEL")
+
+assert isinstance(AZURE_OPENAI_KEY, str)
+assert len(AZURE_OPENAI_KEY) > 0
+assert isinstance(AZURE_OPENAI_MODEL, str)
+assert AZURE_OPENAI_MODEL in ["gpt-4"]
+
+openai.api_key = AZURE_OPENAI_KEY
 
 ###
 
@@ -74,7 +86,7 @@ def _run_mesh_rendering_script(
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
 def predict(prompt, temperature):
     message = openai.ChatCompletion.create(
-        model=OPENAI_MODEL_NAME,
+        model=AZURE_OPENAI_MODEL,
         temperature=temperature,
         messages=[
             # {"role": "system", "content": prompt}
