@@ -140,11 +140,14 @@ def main(
     assert model in Utils.Configs.MODELS_SUPPORTED
     assert isinstance(source_rootpath, Path)
     assert isinstance(out_rootpath, Path)
-    assert out_rootpath.exists()
-    assert out_rootpath.is_dir()
+    # assert out_rootpath.exists()
+    # assert out_rootpath.is_dir()
     assert isinstance(skip_existing_renderings, bool)
 
-    out_rootpath.mkdir(parents=True, exist_ok=True)
+    if out_rootpath.exists():
+        assert out_rootpath.is_dir()
+    else:
+        out_rootpath.mkdir(parents=True, exist_ok=True)
 
     out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
         out_rootpath=out_rootpath,
