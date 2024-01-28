@@ -109,6 +109,7 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
     icosphere = trimesh.creation.icosphere(subdivisions=0)
     icosphere.vertices *= radius
 
+    texts = []
     for idx, img_path in enumerate(os.listdir(out_prompt_renderings_path)):
         color = Image.open(os.path.join(out_prompt_renderings_uri, img_path)).convert("RGB")
         image = vis_processors["eval"](color).unsqueeze(0).to(device)
