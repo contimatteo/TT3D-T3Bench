@@ -1,5 +1,5 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
-from typing import Tuple, List, Callable
+from typing import Tuple, List, Callable, Literal
 
 import os
 import torch
@@ -250,11 +250,14 @@ class _Storage():
     def build_renderings_path_by_prompt(
         prompt: str,
         out_rootpath: Path,
+        eval_type: Literal["quality", "alignment"],
         assert_exists: bool,
     ) -> Path:
+        assert isinstance(eval_type, str)
+        assert eval_type in ["quality", "alignment"]
         assert "_" not in prompt
 
-        out_renderings_path = out_rootpath.joinpath("renderings")
+        out_renderings_path = out_rootpath.joinpath("renderings", eval_type)
 
         prompt_enc = Utils.Prompt.encode(prompt=prompt)
         out_prompt_renderings_path = out_renderings_path.joinpath(prompt_enc)

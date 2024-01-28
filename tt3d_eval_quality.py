@@ -25,21 +25,26 @@ def _run_mesh_rendering_script(
     skip_existing: bool,
 ) -> None:
     model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
-    source_result_path = Utils.Storage.build_result_path_by_prompt(
-        model_dirname=model_dirname,
-        prompt=prompt,
-        out_rootpath=source_rootpath,
-        assert_exists=True,
-    )
-
+    # source_result_path = Utils.Storage.build_result_path_by_prompt(
+    #     model_dirname=model_dirname,
+    #     prompt=prompt,
+    #     out_rootpath=source_rootpath,
+    #     assert_exists=True,
+    # )
     source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
-        result_path=source_result_path,
+        result_path=Utils.Storage.build_result_path_by_prompt(
+            model_dirname=model_dirname,
+            prompt=prompt,
+            out_rootpath=source_rootpath,
+            assert_exists=True,
+        ),
         assert_exists=True,
     )
 
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
+        eval_type="quality",
         assert_exists=False,
     )
 
@@ -70,6 +75,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
+        eval_type="quality",
         assert_exists=True,
     )
     out_prompt_renderings_uri = str(out_prompt_renderings_path)
