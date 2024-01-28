@@ -12,3 +12,5 @@ pip install git+https://github.com/openai/CLIP.git
 
 pip install -q omegaconf iopath decord webdataset einops pycocoevalcap
 pip install --no-deps salesforce-lavis
+
+pip install python-dotenv opencv-python
