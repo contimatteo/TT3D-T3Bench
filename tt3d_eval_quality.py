@@ -49,26 +49,16 @@ def _run_mesh_rendering_script(
     )
 
     if skip_existing and out_prompt_renderings_path.exists():
-        print("")
-        print("Renderings already exists --> ", out_prompt_renderings_path)
-        print("")
         return
 
     if out_prompt_renderings_path.exists():
         shutil.rmtree(out_prompt_renderings_path)
     out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
 
-    print("")
-    print("")
-    print(prompt)
-    # print(source_result_objmodel_path)
-    # print(out_prompt_renderings_path)
     ### TODO: improve this logic ...
     os.system(
         f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
     )
-    print("")
-    print("")
 
 
 def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
@@ -164,6 +154,10 @@ def main(
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
+        print("")
+        print("")
+        print(prompt)
+
         _run_mesh_rendering_script(
             model=model,
             prompt=prompt,
@@ -173,6 +167,9 @@ def main(
         )
 
         _evaluate_quality(model=model, prompt=prompt, out_rootpath=out_rootpath)
+
+        print("")
+        print("")
 
 
 ###
