@@ -193,6 +193,7 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     1. Evaluate the recall, or how well the prediction covers the information in the prompt. If the prediction contains information that does not appear in the prompt, it should not be considered as bad.
     2. If the prediction contains correct information about color or features in the prompt, you should also consider raising your score.
     3. Assign a score between 1 and 5, with 5 being the highest. Do not provide a complete answer; give the score in the format: 3
+    
     '''
 
     prompt_to_gpt4 = grounding
