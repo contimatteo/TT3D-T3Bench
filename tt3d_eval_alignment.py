@@ -42,6 +42,13 @@ openai.api_base = OPENAI_ENDPOINT
 openai.api_key = OPENAI_KEY
 openai.api_version = "2023-05-15"
 
+blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+    name='blip2_t5',
+    model_type='pretrain_flant5xl',
+    is_eval=True,
+    device=device,
+)
+
 ###
 
 
@@ -117,7 +124,9 @@ def _openai_gpt_merge_captions(prompt, temperature):
 
     assert response is not None
 
-    return response["choices"][0]["message"]["content"]
+    merged_caption = response["choices"][0]["message"]["content"]
+
+    return merged_caption
 
 
 def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
@@ -131,12 +140,12 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
 
     #
 
-    model, vis_processors, _ = load_model_and_preprocess(
-        name='blip2_t5',
-        model_type='pretrain_flant5xl',
-        is_eval=True,
-        device=device,
-    )
+    # blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+    #     name='blip2_t5',
+    #     model_type='pretrain_flant5xl',
+    #     is_eval=True,
+    #     device=device,
+    # )
 
     radius = 2.2
     icosphere = trimesh.creation.icosphere(subdivisions=0)
@@ -145,8 +154,8 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
     texts = []
     for idx, img_path in enumerate(os.listdir(out_prompt_renderings_path)):
         color = Image.open(os.path.join(out_prompt_renderings_uri, img_path)).convert("RGB")
-        image = vis_processors["eval"](color).unsqueeze(0).to(device)
-        x = model.generate({"image": image}, use_nucleus_sampling=True, num_captions=1)
+        image = blip2_vis_processors["eval"](color).unsqueeze(0).to(device)
+        x = blip2_model.generate({"image": image}, use_nucleus_sampling=True, num_captions=1)
         texts += x
 
     prompt_input = 'Given a set of descriptions about the same 3D object, distill these descriptions into one concise caption. The descriptions are as follows:\n\n'
