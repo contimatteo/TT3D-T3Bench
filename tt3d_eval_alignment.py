@@ -33,6 +33,7 @@ assert isinstance(OPENAI_KEY, str)
 assert len(OPENAI_KEY) > 0
 assert isinstance(OPENAI_ENDPOINT, str)
 assert len(OPENAI_ENDPOINT) > 0
+assert OPENAI_API_TYPE != "azure" or isinstance(OPENAI_DEPLOYMENT, str)
 assert isinstance(OPENAI_MODEL, str)
 assert OPENAI_MODEL in ["gpt-35-turbo", "gpt-4"]
 
@@ -93,17 +94,26 @@ def _run_mesh_rendering_script(
 
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
-def predict(prompt, temperature):
+def _openai_gpt_merge_captions(prompt, temperature):
     response: dict = None
 
     # messages = [{"role": "system", "content": prompt}]
     messages = [{"role": "user", "content": prompt}]
 
     if OPENAI_API_TYPE == "openai":
-        response = openai.ChatCompletion.create(model=OPENAI_MODEL, temperature=temperature, messages=messages)
+        response = openai.ChatCompletion.create(
+            model=OPENAI_MODEL,
+            temperature=temperature,
+            messages=messages,
+        )
     elif OPENAI_API_TYPE == "azure":
         # engine = "deployment_name".
-        response = openai.ChatCompletion.create(engine=OPENAI_DEPLOYMENT, temperature=temperature, messages=[messages])
+        response = openai.ChatCompletion.create(
+            engine=OPENAI_DEPLOYMENT,
+            model=OPENAI_MODEL,
+            temperature=temperature,
+            messages=messages,
+        )
 
     assert response is not None
 
@@ -145,7 +155,7 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
         prompt_input += txt
         prompt_input += '\n'
     prompt_input += '\nAvoid describing background, surface, and posture. The caption should be:'
-    res = predict(prompt_input, 0)
+    res = _openai_gpt_merge_captions(prompt_input, 0)
     print(res)
 
     # with open(f'outputs_caption/{args.method}_{args.group}.txt', 'a+') as f:
