@@ -120,7 +120,25 @@ def _openai_gpt_merge_captions(prompt, temperature):
     return merged_caption
 
 
-def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
+_openai_gpt_eval_caption = _openai_gpt_merge_captions
+
+
+def _clean_merged_caption(merged_caption: str) -> str:
+    caption = merged_caption.strip()
+
+    if caption[-1] == '.':
+        caption = caption[:-1]
+    if caption[0] == '"' and caption[-1] == '"':
+        caption = caption[1:-1]
+    if caption[0] == '\'' and caption[-1] == '\'':
+        caption = caption[1:-1]
+    if caption[-1] == '.':
+        caption = caption[:-1]
+
+    return caption
+
+
+def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> str:
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
@@ -130,13 +148,6 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
     out_prompt_renderings_uri = str(out_prompt_renderings_path)
 
     #
-
-    # blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
-    #     name='blip2_t5',
-    #     model_type='pretrain_flant5xl',
-    #     is_eval=True,
-    #     device=device,
-    # )
 
     radius = 2.2
     icosphere = trimesh.creation.icosphere(subdivisions=0)
@@ -156,7 +167,11 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
         prompt_input += '\n'
     prompt_input += '\nAvoid describing background, surface, and posture. The caption should be:'
 
-    captions_merged_text = _openai_gpt_merge_captions(prompt_input, 0)
+    merged_caption = _openai_gpt_merge_captions(prompt=prompt_input, temperature=0)
+    merged_caption = _clean_merged_caption(merged_caption=merged_caption)
+
+    assert isinstance(merged_caption, str)
+    assert len(merged_caption) > 0
 
     #
 
@@ -167,11 +182,31 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
 
     ### TODO: improve this logic -> convert the ".txt" to a pandas dataframe.
     with open(str(out_alignment_captions_filepath), 'a+', encoding="utf-8") as f:
-        f.write(prompt + ' -> ' + captions_merged_text + '\n')
+        f.write(prompt + ' -> ' + merged_caption + '\n')
+
+    return merged_caption
 
 
-def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path) -> None:
-    pass
+def _evaluate_alignment(model: str, prompt: str, out_rootpath: Pat, merged_caption: str) -> None:
+    grounding = '''You are an assessment expert responsible for prompt-prediction pairs. Your task is to score the prediction according to the following requirements:
+
+    1. Evaluate the recall, or how well the prediction covers the information in the prompt. If the prediction contains information that does not appear in the prompt, it should not be considered as bad.
+    2. If the prediction contains correct information about color or features in the prompt, you should also consider raising your score.
+    3. Assign a score between 1 and 5, with 5 being the highest. Do not provide a complete answer; give the score in the format: 3
+    '''
+
+    prompt_to_gpt4 = grounding
+    prompt_to_gpt4 += 'Prompt: ' + prompt + '\n'
+    prompt_to_gpt4 += 'Prediction: ' + merged_caption
+    print(prompt_to_gpt4)
+    eval_result_text = _openai_gpt_eval_caption(prompt=prompt_to_gpt4, temperature=0)
+
+    print(eval_result_text)
+    # output += f'{np.round(float(res)):.0f}\t\t{prompt}\n'
+
+    # print("Alignment Score:", mean_score)
+    # with open(f'result/alignment/{args.method}_{args.group}.txt', 'a+') as f:
+    #     f.write(output)
 
 
 ###
@@ -225,9 +260,9 @@ def main(
             skip_existing=skip_existing_renderings,
         )
 
-        _caption_renderings(model=model, prompt=prompt, out_rootpath=out_rootpath)
+        merged_caption = _caption_renderings(model=model, prompt=prompt, out_rootpath=out_rootpath)
 
-        # _evaluate_alignment(model=model, prompt=prompt, out_rootpath=out_rootpath)
+        _evaluate_alignment(model=model, prompt=prompt, out_rootpath=out_rootpath, merged_caption=merged_caption)
 
         print("")
     print("")
