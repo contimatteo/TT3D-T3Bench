@@ -21,16 +21,25 @@ from utils import Utils
 
 device = Utils.Cuda.init()
 
-AZURE_OPENAI_KEY = os.environ.get("AZURE_OPENAI_KEY")
-AZURE_OPENAI_DEPLOYMENT = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
-AZURE_OPENAI_MODEL = os.environ.get("AZURE_OPENAI_MODEL")
+OPENAI_API_TYPE = os.environ.get("OPENAI_API_TYPE")
+OPENAI_KEY = os.environ.get("OPENAI_KEY")
+OPENAI_ENDPOINT = os.environ.get("OPENAI_ENDPOINT")
+OPENAI_DEPLOYMENT = os.environ.get("OPENAI_DEPLOYMENT")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL")
 
-assert isinstance(AZURE_OPENAI_KEY, str)
-assert len(AZURE_OPENAI_KEY) > 0
-assert isinstance(AZURE_OPENAI_MODEL, str)
-assert AZURE_OPENAI_MODEL in ["gpt-4"]
+assert isinstance(OPENAI_API_TYPE, str)
+assert OPENAI_API_TYPE in ["openai", "azure"]
+assert isinstance(OPENAI_KEY, str)
+assert len(OPENAI_KEY) > 0
+assert isinstance(OPENAI_ENDPOINT, str)
+assert len(OPENAI_ENDPOINT) > 0
+assert isinstance(OPENAI_MODEL, str)
+assert OPENAI_MODEL in ["gpt-35-turbo", "gpt-4"]
 
-openai.api_key = AZURE_OPENAI_KEY
+openai.api_type = OPENAI_API_TYPE
+openai.api_base = OPENAI_ENDPOINT
+openai.api_key = OPENAI_KEY
+openai.api_version = "2023-05-15"
 
 ###
 
@@ -85,18 +94,20 @@ def _run_mesh_rendering_script(
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
 def predict(prompt, temperature):
-    message = openai.ChatCompletion.create(
-        model=AZURE_OPENAI_MODEL,
-        temperature=temperature,
-        messages=[
-            # {"role": "system", "content": prompt}
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ])
-    # print(message)
-    return message["choices"][0]["message"]["content"]
+    response: dict = None
+
+    # messages = [{"role": "system", "content": prompt}]
+    messages = [{"role": "user", "content": prompt}]
+
+    if OPENAI_API_TYPE == "openai":
+        response = openai.ChatCompletion.create(model=OPENAI_MODEL, temperature=temperature, messages=messages)
+    elif OPENAI_API_TYPE == "azure":
+        # engine = "deployment_name".
+        response = openai.ChatCompletion.create(engine=OPENAI_DEPLOYMENT, temperature=temperature, messages=[messages])
+
+    assert response is not None
+
+    return response["choices"][0]["message"]["content"]
 
 
 def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
