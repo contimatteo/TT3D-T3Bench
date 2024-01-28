@@ -164,11 +164,20 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> None:
         prompt_input += txt
         prompt_input += '\n'
     prompt_input += '\nAvoid describing background, surface, and posture. The caption should be:'
-    res = _openai_gpt_merge_captions(prompt_input, 0)
-    print(res)
 
-    # with open(f'outputs_caption/{args.method}_{args.group}.txt', 'a+') as f:
-    #     f.write(prompt + ':' + res + '\n')
+    captions_merged_text = _openai_gpt_merge_captions(prompt_input, 0)
+    print(captions_merged_text)
+
+    #
+
+    out_alignment_captions_filepath = Utils.Storage.build_alignment_captions_filepath(
+        out_rootpath=out_rootpath,
+        assert_exists=True,
+    )
+
+    ### TODO: improve this logic -> convert the ".txt" to a pandas dataframe.
+    with open(str(out_alignment_captions_filepath), 'a+', encoding="utf-8") as f:
+        f.write(prompt + ':' + captions_merged_text + '\n')
 
 
 def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path) -> None:
@@ -199,12 +208,12 @@ def main(
     else:
         out_rootpath.mkdir(parents=True, exist_ok=True)
 
-    out_alignment_scores_filepath = Utils.Storage.build_prompt_alignment_scores_filepath(
+    out_alignment_captions_filepath = Utils.Storage.build_alignment_captions_filepath(
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
-    out_alignment_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
-    out_alignment_scores_filepath.write_text("", encoding="utf-8")
+    out_alignment_captions_filepath.parent.mkdir(parents=True, exist_ok=True)
+    out_alignment_captions_filepath.write_text("", encoding="utf-8")
 
     #
 

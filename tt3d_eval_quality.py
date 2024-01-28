@@ -110,7 +110,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path) -> None:
 
     #
 
-    out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
+    out_quality_scores_filepath = Utils.Storage.build_quality_scores_filepath(
         out_rootpath=out_rootpath,
         assert_exists=True,
     )
@@ -149,7 +149,7 @@ def main(
     else:
         out_rootpath.mkdir(parents=True, exist_ok=True)
 
-    out_quality_scores_filepath = Utils.Storage.build_prompt_quality_scores_filepath(
+    out_quality_scores_filepath = Utils.Storage.build_quality_scores_filepath(
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
