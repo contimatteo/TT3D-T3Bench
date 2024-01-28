@@ -150,11 +150,11 @@ def main(
 
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
+    print("")
     for prompt in prompts:
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
-        print("")
         print("")
         print(prompt)
 
@@ -169,7 +169,7 @@ def main(
         _evaluate_quality(model=model, prompt=prompt, out_rootpath=out_rootpath)
 
         print("")
-        print("")
+    print("")
 
 
 ###
