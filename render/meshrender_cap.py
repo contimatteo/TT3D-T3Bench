@@ -1,6 +1,7 @@
 import os
 # switch to "osmesa" or "egl" before loading pyrender
-os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+# os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 import numpy as np
 import pyrender
@@ -11,6 +12,7 @@ from PIL import Image
 import imageio
 
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, required=True)
 parser.add_argument('--name', type=str)
@@ -40,7 +42,7 @@ Radius = 2.2
 
 # compose scene
 scene = pyrender.Scene(ambient_light=[1., 1., 1.], bg_color=[0, 0, 0])
-camera = pyrender.PerspectiveCamera( yfov=np.pi / 3.0)
+camera = pyrender.PerspectiveCamera(yfov=np.pi / 3.0)
 # light = pyrender.Ambi
 
 scene.add(mesh, pose=np.eye(4))
