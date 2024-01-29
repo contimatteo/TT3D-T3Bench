@@ -18,6 +18,8 @@ from utils import Utils
 
 device = Utils.Cuda.init()
 
+imagereward_model = RM.load("ImageReward-v1.0")
+
 ###
 
 
@@ -97,7 +99,6 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
     out_prompt_renderings_uri = str(out_prompt_renderings_path)
 
     RADIUS = 2.2  ### pylint: disable=invalid-name
-    model = RM.load("ImageReward-v1.0")
     icosphere = trimesh.creation.icosphere(subdivisions=2, radius=RADIUS)
 
     scores = {i: -114514 for i in range(len(icosphere.vertices))}
@@ -109,7 +110,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
             img_path = f'{idx:03d}_{j}.png'
             # convert color to PIL image
             color = Image.open(os.path.join(out_prompt_renderings_uri, img_path))
-            reward = model.score(prompt, color)
+            reward = imagereward_model.score(prompt, color)
             scores[idx] = max(scores[idx], reward)
 
     # convolute scores on the icosphere for 3 times
@@ -128,7 +129,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
     #     _score = scores[idx] * 20 + 50
     scores_idxs = sorted(scores, key=lambda x: scores[x], reverse=True)
     scores_idxs = list(scores_idxs)
-    score_idx = scores_idxs[:1]
+    score_idx = scores_idxs[0]  ### scores_idxs[:1] --> scores_idxs[0]
     score = scores[score_idx] * 20 + 50
 
     print("score -> ", score)
