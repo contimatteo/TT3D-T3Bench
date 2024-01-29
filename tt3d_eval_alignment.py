@@ -245,6 +245,7 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     score: int = None
     try:
         score = int(score_as_str)
+        assert score is not None
     except ValueError:
         warnings.warn("Alignment score extraction from LLM failed.")
         return -1
