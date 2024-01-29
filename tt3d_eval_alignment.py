@@ -226,7 +226,7 @@ def _evaluate_alignment(
         if skip_existing and prompt in alignment_scores_map:
             score = alignment_scores_map[prompt]
             assert isinstance(score, int)
-            print("Score already exists --> ", score)
+            print("score already exists --> ", score)
             return score
 
     assert isinstance(alignment_scores_map, dict)
