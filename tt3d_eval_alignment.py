@@ -146,6 +146,7 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
+    out_alignment_captions_filepath.parent.mkdir(parents=True, exist_ok=True)
 
     if skip_existing and out_alignment_captions_filepath.exists():
         print("Caption already exists --> ", out_alignment_captions_filepath)
