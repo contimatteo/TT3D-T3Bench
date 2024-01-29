@@ -209,10 +209,12 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     prompt_to_gpt4 = grounding
     prompt_to_gpt4 += '\n' + 'Prompt: ' + prompt + '\n'
     prompt_to_gpt4 += 'Prediction: ' + merged_caption
-    print(prompt_to_gpt4)
+    # print(prompt_to_gpt4)
     eval_result_text = _openai_gpt_eval_caption(prompt=prompt_to_gpt4, temperature=0)
 
+    print("")
     print(eval_result_text)
+    print("")
     # output += f'{np.round(float(res)):.0f}\t\t{prompt}\n'
 
     # print("Alignment Score:", mean_score)
