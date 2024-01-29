@@ -303,6 +303,21 @@ class _Storage():
 
         return out_prompt_alignment_caption_filepath
 
+    @classmethod
+    def build_alignment_scores_filepath(
+        cls,
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        out_scores_path = out_rootpath.joinpath("scores")
+        out_alignment_scores_filepath = out_scores_path.joinpath("alignment.json")
+
+        if assert_exists:
+            assert out_alignment_scores_filepath.exists()
+            assert out_alignment_scores_filepath.is_file()
+
+        return out_alignment_scores_filepath
+
 
 ###
 

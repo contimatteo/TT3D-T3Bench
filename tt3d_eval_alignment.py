@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
+from typing import Dict
 import argparse
 import os
 import shutil
@@ -11,6 +12,7 @@ import backoff
 import trimesh
 import string
 import warnings
+import json
 
 from pathlib import Path
 from tqdm import tqdm
@@ -199,9 +201,37 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
     return merged_caption
 
 
-def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_caption: str) -> None:
+def _evaluate_alignment(
+    model: str,
+    prompt: str,
+    out_rootpath: Path,
+    merged_caption: str,
+    skip_existing: bool,
+) -> None:
     assert isinstance(merged_caption, str)
     assert len(merged_caption) > 0
+
+    out_alignment_scores_filepath = Utils.Storage.build_alignment_scores_filepath(
+        out_rootpath=out_rootpath,
+        assert_exists=False,
+    )
+    out_alignment_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
+
+    alignment_scores_map: Dict[str, int] = None
+    if not out_alignment_scores_filepath.exists():
+        alignment_scores_map = {}
+        out_alignment_scores_filepath.write_text("{}", encoding="utf-8")
+    else:
+        alignment_scores_map = json.loads(out_alignment_scores_filepath.read_text(encoding="UTF-8"))
+        if skip_existing and prompt in alignment_scores_map:
+            score = alignment_scores_map[prompt]
+            assert isinstance(score, int)
+            print("Score already exists --> ", score)
+            return score
+
+    assert isinstance(alignment_scores_map, dict)
+
+    #
 
     grounding = '''You are an assessment expert responsible for prompt-prediction pairs. Your task is to score the prediction according to the following requirements:
 
@@ -246,20 +276,21 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     try:
         score = int(score_as_str)
         assert score is not None
+        if score < 1 or score > 5:
+            warnings.warn("Alignment score out of range [1,5].")
+            return -1
     except ValueError:
         warnings.warn("Alignment score extraction from LLM failed.")
         return -1
 
-    if score < 1 or score > 5:
-        warnings.warn("Alignment score out of range [1,5].")
-        return -1
+    #
+
+    alignment_scores_map[prompt] = score
+
+    with open(out_alignment_scores_filepath, 'w', encoding="utf-8") as f:
+        json.dump(alignment_scores_map, f, indent=4, ensure_ascii=False)
 
     return score
-
-    # output += f'{np.round(float(res)):.0f}\t\t{prompt}\n'
-    # print("Alignment Score:", mean_score)
-    # with open(f'result/alignment/{args.method}_{args.group}.txt', 'a+') as f:
-    #     f.write(output)
 
 
 ###
@@ -272,6 +303,7 @@ def main(
     out_rootpath: Path,
     skip_existing_renderings: bool,
     skip_existing_captions: bool,
+    skip_existing_scores: bool,
 ) -> None:
     assert isinstance(model, str)
     assert len(model) > 0
@@ -314,7 +346,13 @@ def main(
             skip_existing=skip_existing_captions,
         )
 
-        _evaluate_alignment(model=model, prompt=prompt, out_rootpath=out_rootpath, merged_caption=merged_caption)
+        _evaluate_alignment(
+            model=model,
+            prompt=prompt,
+            out_rootpath=out_rootpath,
+            merged_caption=merged_caption,
+            skip_existing=skip_existing_scores,
+        )
 
         print("")
     print("")
@@ -336,6 +374,7 @@ if __name__ == '__main__':
     parser.add_argument('--out-path', type=Path, required=True)
     parser.add_argument("--skip-existing-renderings", action="store_true", default=False)
     parser.add_argument("--skip-existing-captions", action="store_true", default=False)
+    parser.add_argument("--skip-existing-scores", action="store_true", default=False)
 
     args = parser.parse_args()
 
@@ -348,4 +387,5 @@ if __name__ == '__main__':
         out_rootpath=args.out_path,
         skip_existing_renderings=args.skip_existing_renderings,
         skip_existing_captions=args.skip_existing_captions,
+        skip_existing_scores=args.skip_existing_scores,
     )
