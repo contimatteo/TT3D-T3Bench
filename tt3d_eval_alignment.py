@@ -9,6 +9,8 @@ import shutil
 import openai
 import backoff
 import trimesh
+import string
+import warnings
 
 from pathlib import Path
 from tqdm import tqdm
@@ -94,7 +96,7 @@ def _run_mesh_rendering_script(
 
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
-def _openai_gpt_merge_captions(prompt, temperature):
+def _openai_gpt_merge_captions(prompt, temperature) -> str:
     response: dict = None
 
     # messages = [{"role": "system", "content": prompt}]
@@ -219,8 +221,41 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     print("")
     print(eval_result_text)
     print("")
-    # output += f'{np.round(float(res)):.0f}\t\t{prompt}\n'
 
+    ### LLM answer should be in the following format:
+    ### """"
+    ### Score: <int>
+    ### ...
+    ### """"
+    ### Hence, we are looking for the line that starts with "Score: ".
+    eval_result_text_lines = eval_result_text.split("\n")
+    eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
+    eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
+    eval_result_text_lines = list(eval_result_text_lines)
+    assert len(eval_result_text_lines) == 1
+
+    score_as_str = eval_result_text_lines[0]
+
+    score_as_str = score_as_str.replace("Score:", "")
+    score_as_str = score_as_str.strip()
+    score_as_str = score_as_str.strip(string.ascii_letters)
+    score_as_str = score_as_str.replace(" ", "")
+    assert score_as_str.isdecimal()
+
+    score: int = None
+    try:
+        score = int(score_as_str)
+    except ValueError:
+        warnings.warn("Alignment score extraction from LLM failed.")
+        return -1
+
+    if score < 1 or score > 5:
+        warnings.warn("Alignment score out of range [1,5].")
+        return -1
+
+    return score
+
+    # output += f'{np.round(float(res)):.0f}\t\t{prompt}\n'
     # print("Alignment Score:", mean_score)
     # with open(f'result/alignment/{args.method}_{args.group}.txt', 'a+') as f:
     #     f.write(output)
