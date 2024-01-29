@@ -206,7 +206,7 @@ def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_capt
     1. Evaluate the recall, or how well the prediction covers the information in the prompt. If the prediction contains information that does not appear in the prompt, it should not be considered as bad.
     2. If the prediction contains correct information about color or features in the prompt, you should also consider raising your score.
     3. Assign a score between 1 and 5, with 5 being the highest. 
-    4. Do not provide a complete answer; give the score in the format: "Score = 1" or "Score = 2" or "Score = 3" or "Score = 4" or "Score = 5".
+    4. Do not provide a complete answer; give only the score in the numeric format: "1" or "2" or "3" or "4" or "5".
 
     '''
 
