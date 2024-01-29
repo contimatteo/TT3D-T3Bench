@@ -150,7 +150,7 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
 
     if skip_existing and out_alignment_captions_filepath.exists():
         print("Caption already exists --> ", out_alignment_captions_filepath)
-        return
+        return out_alignment_captions_filepath.read_text(encoding="utf-8")
 
     out_alignment_captions_filepath.write_text("", encoding="utf-8")
 
