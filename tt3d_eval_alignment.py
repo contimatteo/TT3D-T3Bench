@@ -198,6 +198,9 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
 
 
 def _evaluate_alignment(model: str, prompt: str, out_rootpath: Path, merged_caption: str) -> None:
+    assert isinstance(merged_caption, str)
+    assert len(merged_caption) > 0
+
     grounding = '''You are an assessment expert responsible for prompt-prediction pairs. Your task is to score the prediction according to the following requirements:
 
     1. Evaluate the recall, or how well the prediction covers the information in the prompt. If the prediction contains information that does not appear in the prompt, it should not be considered as bad.
