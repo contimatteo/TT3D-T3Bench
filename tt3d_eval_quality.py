@@ -82,7 +82,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
         quality_scores_map = json.loads(out_quality_scores_filepath.read_text(encoding="UTF-8"))
         if skip_existing and prompt in quality_scores_map:
             _score = quality_scores_map[prompt]
-            assert isinstance(_score, int)
+            assert isinstance(_score, int) or isinstance(_score, float)
             print("score already exists --> ", _score)
             return _score
 
@@ -164,13 +164,6 @@ def main(
         assert out_rootpath.is_dir()
     else:
         out_rootpath.mkdir(parents=True, exist_ok=True)
-
-    # out_quality_scores_filepath = Utils.Storage.build_quality_scores_filepath(
-    #     out_rootpath=out_rootpath,
-    #     assert_exists=False,
-    # )
-    # out_quality_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
-    # out_quality_scores_filepath.write_text("", encoding="utf-8")
 
     #
 
