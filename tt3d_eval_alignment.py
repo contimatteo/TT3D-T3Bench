@@ -248,10 +248,6 @@ def _evaluate_alignment(
     # print(prompt_to_gpt4)
     eval_result_text = _openai_gpt_eval_caption(prompt=prompt_to_gpt4, temperature=0)
 
-    print("")
-    print(eval_result_text)
-    print("")
-
     ### LLM answer should be in the following format:
     ### """"
     ### Score: <int>
@@ -285,8 +281,9 @@ def _evaluate_alignment(
 
     #
 
-    alignment_scores_map[prompt] = score
+    print("score -> ", score)
 
+    alignment_scores_map[prompt] = score
     with open(out_alignment_scores_filepath, 'w', encoding="utf-8") as f:
         json.dump(alignment_scores_map, f, indent=4, ensure_ascii=False)
 

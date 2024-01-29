@@ -20,3 +20,4 @@ CUDA_VISIBLE_DEVICES=0 python3 tt3d_eval_alignment.py \
   --out-path /media/data2/mconti/TT3D/metrics/T3Bench/fantasia3d
 #  --skip-existing-renderings
 #  --skip-existing-captions
+#  --skip-existing-scores
