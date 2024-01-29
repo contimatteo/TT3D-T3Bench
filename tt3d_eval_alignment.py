@@ -224,10 +224,10 @@ def _evaluate_alignment(
     else:
         alignment_scores_map = json.loads(out_alignment_scores_filepath.read_text(encoding="UTF-8"))
         if skip_existing and prompt in alignment_scores_map:
-            score = alignment_scores_map[prompt]
-            assert isinstance(score, int)
-            print("score already exists --> ", score)
-            return score
+            _score = alignment_scores_map[prompt]
+            assert isinstance(_score, int)
+            print("score already exists --> ", _score)
+            return _score
 
     assert isinstance(alignment_scores_map, dict)
 
@@ -307,9 +307,9 @@ def main(
     assert model in Utils.Configs.MODELS_SUPPORTED
     assert isinstance(source_rootpath, Path)
     assert isinstance(out_rootpath, Path)
-    # assert out_rootpath.exists()
-    # assert out_rootpath.is_dir()
     assert isinstance(skip_existing_renderings, bool)
+    assert isinstance(skip_existing_captions, bool)
+    assert isinstance(skip_existing_scores, bool)
 
     if out_rootpath.exists():
         assert out_rootpath.is_dir()

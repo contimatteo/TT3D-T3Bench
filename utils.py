@@ -269,21 +269,6 @@ class _Storage():
         return out_prompt_renderings_path
 
     @classmethod
-    def build_quality_scores_filepath(
-        cls,
-        out_rootpath: Path,
-        assert_exists: bool,
-    ) -> Path:
-        out_scores_path = out_rootpath.joinpath("scores")
-        out_quality_scores_filepath = out_scores_path.joinpath("quality.txt")
-
-        if assert_exists:
-            assert out_quality_scores_filepath.exists()
-            assert out_quality_scores_filepath.is_file()
-
-        return out_quality_scores_filepath
-
-    @classmethod
     def build_prompt_alignment_caption_filepath(
         cls,
         prompt: str,
@@ -302,6 +287,21 @@ class _Storage():
             assert out_prompt_alignment_caption_filepath.is_file()
 
         return out_prompt_alignment_caption_filepath
+
+    @classmethod
+    def build_quality_scores_filepath(
+        cls,
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        out_scores_path = out_rootpath.joinpath("scores")
+        out_quality_scores_filepath = out_scores_path.joinpath("quality.json")
+
+        if assert_exists:
+            assert out_quality_scores_filepath.exists()
+            assert out_quality_scores_filepath.is_file()
+
+        return out_quality_scores_filepath
 
     @classmethod
     def build_alignment_scores_filepath(
