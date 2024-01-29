@@ -35,7 +35,7 @@ assert isinstance(OPENAI_ENDPOINT, str)
 assert len(OPENAI_ENDPOINT) > 0
 assert OPENAI_API_TYPE != "azure" or isinstance(OPENAI_DEPLOYMENT, str)
 assert isinstance(OPENAI_MODEL, str)
-assert OPENAI_MODEL in ["gpt-35-turbo", "gpt-4"]
+assert OPENAI_MODEL in ["gpt-35-turbo", "gpt-35-turbo-16k", "gpt-4"]
 
 openai.api_type = OPENAI_API_TYPE
 openai.api_base = OPENAI_ENDPOINT
@@ -59,17 +59,6 @@ def _run_mesh_rendering_script(
     out_rootpath: Path,
     skip_existing: bool,
 ) -> None:
-    model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
-    source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
-        result_path=Utils.Storage.build_result_path_by_prompt(
-            model_dirname=model_dirname,
-            prompt=prompt,
-            out_rootpath=source_rootpath,
-            assert_exists=True,
-        ),
-        assert_exists=True,
-    )
-
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
@@ -84,6 +73,19 @@ def _run_mesh_rendering_script(
     if out_prompt_renderings_path.exists():
         shutil.rmtree(out_prompt_renderings_path)
     out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
+
+    #
+
+    model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
+    source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
+        result_path=Utils.Storage.build_result_path_by_prompt(
+            model_dirname=model_dirname,
+            prompt=prompt,
+            out_rootpath=source_rootpath,
+            assert_exists=True,
+        ),
+        assert_exists=True,
+    )
 
     ### TODO: improve this logic ...
     os.system(
@@ -138,7 +140,21 @@ def _clean_merged_caption(merged_caption: str) -> str:
     return caption
 
 
-def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> str:
+def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> str:
+    out_alignment_captions_filepath = Utils.Storage.build_prompt_alignment_caption_filepath(
+        prompt=prompt,
+        out_rootpath=out_rootpath,
+        assert_exists=False,
+    )
+
+    if skip_existing and out_alignment_captions_filepath.exists():
+        print("Caption already exists --> ", out_alignment_captions_filepath)
+        return
+
+    out_alignment_captions_filepath.write_text("", encoding="utf-8")
+
+    #
+
     out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
         prompt=prompt,
         out_rootpath=out_rootpath,
@@ -173,16 +189,9 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path) -> str:
     assert isinstance(merged_caption, str)
     assert len(merged_caption) > 0
 
-    #
-
-    out_alignment_captions_filepath = Utils.Storage.build_alignment_captions_filepath(
-        out_rootpath=out_rootpath,
-        assert_exists=True,
-    )
-
-    ### TODO: improve this logic -> convert the ".txt" to a pandas dataframe.
-    with open(str(out_alignment_captions_filepath), 'a+', encoding="utf-8") as f:
-        f.write(prompt + ' -> ' + merged_caption + '\n')
+    with open(str(out_alignment_captions_filepath), 'w+', encoding="utf-8") as f:
+        # f.write(prompt + ' -> ' + merged_caption + '\n')
+        f.write(merged_caption)
 
     return merged_caption
 
@@ -219,6 +228,7 @@ def main(
     source_rootpath: Path,
     out_rootpath: Path,
     skip_existing_renderings: bool,
+    skip_existing_captions: bool,
 ) -> None:
     assert isinstance(model, str)
     assert len(model) > 0
@@ -233,13 +243,6 @@ def main(
         assert out_rootpath.is_dir()
     else:
         out_rootpath.mkdir(parents=True, exist_ok=True)
-
-    out_alignment_captions_filepath = Utils.Storage.build_alignment_captions_filepath(
-        out_rootpath=out_rootpath,
-        assert_exists=False,
-    )
-    out_alignment_captions_filepath.parent.mkdir(parents=True, exist_ok=True)
-    out_alignment_captions_filepath.write_text("", encoding="utf-8")
 
     #
 
@@ -261,7 +264,12 @@ def main(
             skip_existing=skip_existing_renderings,
         )
 
-        merged_caption = _caption_renderings(model=model, prompt=prompt, out_rootpath=out_rootpath)
+        merged_caption = _caption_renderings(
+            model=model,
+            prompt=prompt,
+            out_rootpath=out_rootpath,
+            skip_existing=skip_existing_captions,
+        )
 
         _evaluate_alignment(model=model, prompt=prompt, out_rootpath=out_rootpath, merged_caption=merged_caption)
 
@@ -284,8 +292,7 @@ if __name__ == '__main__':
     parser.add_argument('--source-path', type=Path, required=True)
     parser.add_argument('--out-path', type=Path, required=True)
     parser.add_argument("--skip-existing-renderings", action="store_true", default=False)
-    ### TODO: implement the above argument logic ...
-    # parser.add_argument("--skip-existing-caption", action="store_true", default=False)
+    parser.add_argument("--skip-existing-captions", action="store_true", default=False)
 
     args = parser.parse_args()
 
@@ -297,4 +304,5 @@ if __name__ == '__main__':
         source_rootpath=args.source_path,
         out_rootpath=args.out_path,
         skip_existing_renderings=args.skip_existing_renderings,
+        skip_existing_captions=args.skip_existing_captions,
     )

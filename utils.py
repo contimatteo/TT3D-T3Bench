@@ -253,9 +253,9 @@ class _Storage():
         eval_type: Literal["quality", "alignment"],
         assert_exists: bool,
     ) -> Path:
+        assert "_" not in prompt
         assert isinstance(eval_type, str)
         assert eval_type in ["quality", "alignment"]
-        assert "_" not in prompt
 
         out_renderings_path = out_rootpath.joinpath("renderings", eval_type)
 
@@ -284,19 +284,24 @@ class _Storage():
         return out_quality_scores_filepath
 
     @classmethod
-    def build_alignment_captions_filepath(
+    def build_prompt_alignment_caption_filepath(
         cls,
+        prompt: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
-        out_captions_path = out_rootpath.joinpath("captions")
-        out_alignment_captions_filepath = out_captions_path.joinpath("alignment.txt")
+        assert "_" not in prompt
+
+        out_captions_path = out_rootpath.joinpath("captions", "alignment")
+
+        prompt_enc = Utils.Prompt.encode(prompt=prompt)
+        out_prompt_alignment_caption_filepath = out_captions_path.joinpath(f"{prompt_enc}.txt")
 
         if assert_exists:
-            assert out_alignment_captions_filepath.exists()
-            assert out_alignment_captions_filepath.is_file()
+            assert out_prompt_alignment_caption_filepath.exists()
+            assert out_prompt_alignment_caption_filepath.is_file()
 
-        return out_alignment_captions_filepath
+        return out_prompt_alignment_caption_filepath
 
 
 ###
