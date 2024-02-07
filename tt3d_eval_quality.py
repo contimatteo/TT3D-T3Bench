@@ -39,6 +39,7 @@ def _run_mesh_rendering_script(
     )
 
     if skip_existing and out_prompt_renderings_path.exists():
+        print("Renderings already exists --> ", out_prompt_renderings_path)
         return
 
     if out_prompt_renderings_path.exists():
