@@ -28,14 +28,19 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
   --model "shap-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
-  --out-path "${OUT_DIR}"
+  --out-path "${OUT_DIR}" \
+  --skip-existing-renderings \
+  --skip-existing-scores
 
 ### PointE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
   --model "point-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
-  --out-path "${OUT_DIR}"
+  --out-path "${OUT_DIR}" \
+  --skip-existing-renderings \
+  --skip-existing-captions \
+  --skip-existing-scores
 
 ###
 ### ALIGNMENT EVALUATION
@@ -53,11 +58,16 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
   --model "shap-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
-  --out-path "${OUT_DIR}"
+  --out-path "${OUT_DIR}" \
+  --skip-existing-renderings \
+  --skip-existing-scores
 
 ### PointE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
   --model "point-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
-  --out-path "${OUT_DIR}"
+  --out-path "${OUT_DIR}" \
+  --skip-existing-renderings \
+  --skip-existing-captions \
+  --skip-existing-scores
