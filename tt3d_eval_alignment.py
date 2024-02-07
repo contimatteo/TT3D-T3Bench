@@ -63,7 +63,8 @@ def _run_mesh_rendering_script(
     out_rootpath: Path,
     skip_existing: bool,
 ) -> None:
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="alignment",
@@ -80,14 +81,10 @@ def _run_mesh_rendering_script(
 
     #
 
-    model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
     source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
-        result_path=Utils.Storage.build_result_path_by_prompt(
-            model_dirname=model_dirname,
-            prompt=prompt,
-            out_rootpath=source_rootpath,
-            assert_exists=True,
-        ),
+        model=model,
+        prompt=prompt,
+        out_rootpath=source_rootpath,
         assert_exists=True,
     )
 
@@ -146,6 +143,7 @@ def _clean_merged_caption(merged_caption: str) -> str:
 
 def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> str:
     out_alignment_captions_filepath = Utils.Storage.build_prompt_alignment_caption_filepath(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         assert_exists=False,
@@ -160,7 +158,8 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
 
     #
 
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="alignment",
@@ -212,6 +211,7 @@ def _evaluate_alignment(
     assert len(merged_caption) > 0
 
     out_alignment_scores_filepath = Utils.Storage.build_alignment_scores_filepath(
+        model=model,
         out_rootpath=out_rootpath,
         assert_exists=False,
     )

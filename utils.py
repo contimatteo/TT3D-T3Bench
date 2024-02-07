@@ -134,66 +134,69 @@ class _Configs():
 class _Storage():
 
     @staticmethod
-    def build_result_path_by_prompt(
-        model_dirname: str,
+    def build_model_path(
+        model: str,
+        out_rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
+
+        model_dirname = _Storage.get_model_final_dirname_from_id(model=model)
+        out_path = out_rootpath.joinpath(model_dirname)
+
+        if assert_exists:
+            assert out_path.exists()
+            assert out_path.is_dir()
+
+        return out_path
+
+    @classmethod
+    def build_result_path(
+        cls,
+        # model_dirname: str,
+        model: str,
         prompt: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
         assert "_" not in prompt
 
-        out_model_path = out_rootpath.joinpath(model_dirname)
-
+        out_model_path = cls.build_model_path(
+            model=model,
+            out_rootpath=out_rootpath,
+            assert_exists=False,
+        )
         prompt_enc = Utils.Prompt.encode(prompt=prompt)
-        out_model_prompt_path = out_model_path.joinpath(prompt_enc)
+        out_path = out_model_path.joinpath(prompt_enc)
 
         if assert_exists:
-            assert out_model_path.exists()
-            assert out_model_path.is_dir()
+            assert out_path.exists()
+            assert out_path.is_dir()
 
-        return out_model_prompt_path
-
-    @staticmethod
-    def delete_unnecessary_ckpts(
-        model_dirname: str,
-        prompt: str,
-        out_rootpath: Path,
-    ) -> None:
-        result_path = Utils.Storage.build_result_path_by_prompt(
-            model_dirname=model_dirname,
-            prompt=prompt,
-            out_rootpath=out_rootpath,
-            assert_exists=True,
-        )
-
-        ckpts_path = result_path.joinpath("ckpts")
-        assert ckpts_path.exists()
-        assert ckpts_path.is_dir()
-        ### "last.ckpt" is a symlink to the last checkpoint.
-        last_ckpt_path = ckpts_path.joinpath("last.ckpt")
-        assert last_ckpt_path.exists()
-        assert last_ckpt_path.is_symlink()  ### INFO: notice this ...
-
-        ckpts_names_to_keep = [
-            "last.ckpt",
-            Path(os.readlink(last_ckpt_path)).name,
-        ]
-
-        for ckpt_path in ckpts_path.glob("*.ckpt"):
-            if ckpt_path.name in ckpts_names_to_keep:
-                continue
-            ckpt_path.unlink()
+        return out_path
 
     @classmethod
     def build_result_final_export_path(
         cls,
-        result_path: Path,
+        model: str,
+        prompt: str,
+        out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
+        result_path = cls.build_result_path(
+            model=model,
+            prompt=prompt,
+            out_rootpath=out_rootpath,
+            assert_exists=False,
+        )
+
+        #
+
         result_save_path = result_path.joinpath("save")
 
         export_candidate_paths: List[Path] = []
-        for export_candidate_path in result_save_path.glob("it*-export"):
+        # for export_candidate_path in result_save_path.glob("it*-export"):
+        for export_candidate_path in result_save_path.glob("export"):
             if not export_candidate_path.is_dir():
                 continue
             export_candidate_paths.append(export_candidate_path)
@@ -204,22 +207,29 @@ class _Storage():
         ### the name od the directory depends on the number of iterations performed during training.
         assert len(export_candidate_paths) == 1
 
-        result_export_path = export_candidate_paths[0]
-        if assert_exists:
-            assert result_export_path.exists()
-            assert result_export_path.is_dir()
+        #
 
-        return result_export_path
+        out_path = export_candidate_paths[0]
+
+        if assert_exists:
+            assert out_path.exists()
+            assert out_path.is_dir()
+
+        return out_path
 
     @classmethod
     def build_result_final_export_obj_path(
         cls,
-        result_path: Path,
+        model: str,
+        prompt: str,
+        out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
         result_export_path = cls.build_result_final_export_path(
-            result_path=result_path,
-            assert_exists=assert_exists,
+            model=model,
+            prompt=prompt,
+            out_rootpath=out_rootpath,
+            assert_exists=False,
         )
 
         result_export_obj_path = result_export_path.joinpath("model.obj")
@@ -230,70 +240,80 @@ class _Storage():
 
         return result_export_obj_path
 
+    #
+
     @staticmethod
-    def build_renderings_path_by_prompt(
+    def build_renderings_path(
+        model: str,
         prompt: str,
         out_rootpath: Path,
         eval_type: Literal["quality", "alignment"],
         assert_exists: bool,
     ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
         assert "_" not in prompt
         assert isinstance(eval_type, str)
         assert eval_type in ["quality", "alignment"]
 
-        out_renderings_path = out_rootpath.joinpath("renderings", eval_type)
-
+        out_renderings_path = out_rootpath.joinpath(model, "renderings", eval_type)
         prompt_enc = Utils.Prompt.encode(prompt=prompt)
-        out_prompt_renderings_path = out_renderings_path.joinpath(prompt_enc)
+        out_path = out_renderings_path.joinpath(prompt_enc)
 
         if assert_exists:
-            assert out_prompt_renderings_path.exists()
-            assert out_prompt_renderings_path.is_dir()
+            assert out_path.exists()
+            assert out_path.is_dir()
 
-        return out_prompt_renderings_path
+        return out_path
 
     @classmethod
     def build_prompt_alignment_caption_filepath(
         cls,
+        model: str,
         prompt: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
         assert "_" not in prompt
 
-        out_captions_path = out_rootpath.joinpath("captions", "alignment")
-
+        out_captions_path = out_rootpath.joinpath(model, "captions", "alignment")
         prompt_enc = Utils.Prompt.encode(prompt=prompt)
-        out_prompt_alignment_caption_filepath = out_captions_path.joinpath(f"{prompt_enc}.txt")
+        out_filepath = out_captions_path.joinpath(f"{prompt_enc}.txt")
 
         if assert_exists:
-            assert out_prompt_alignment_caption_filepath.exists()
-            assert out_prompt_alignment_caption_filepath.is_file()
+            assert out_filepath.exists()
+            assert out_filepath.is_file()
 
-        return out_prompt_alignment_caption_filepath
+        return out_filepath
 
     @classmethod
     def build_quality_scores_filepath(
         cls,
+        model: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
-        out_scores_path = out_rootpath.joinpath("scores")
-        out_quality_scores_filepath = out_scores_path.joinpath("quality.json")
+        assert model in _Configs.MODELS_SUPPORTED
+
+        out_scores_path = out_rootpath.joinpath(model, "scores")
+        out_filepath = out_scores_path.joinpath("quality.json")
 
         if assert_exists:
-            assert out_quality_scores_filepath.exists()
-            assert out_quality_scores_filepath.is_file()
+            assert out_filepath.exists()
+            assert out_filepath.is_file()
 
-        return out_quality_scores_filepath
+        return out_filepath
 
     @classmethod
     def build_alignment_scores_filepath(
         cls,
+        model: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
-        out_scores_path = out_rootpath.joinpath("scores")
+        assert model in _Configs.MODELS_SUPPORTED
+
+        out_scores_path = out_rootpath.joinpath(model, "scores")
         out_alignment_scores_filepath = out_scores_path.joinpath("alignment.json")
 
         if assert_exists:
@@ -309,6 +329,12 @@ class _Storage():
         assert isinstance(model, str)
         assert len(model) > 0
         assert model in Utils.Configs.MODELS_SUPPORTED
+
+        if model == "shap-e":
+            return "shap-e"
+
+        if model == "point-e":
+            return "point-e"
 
         if model == "dreamfusion-sd":
             return "dreamfusion-sd"
@@ -360,6 +386,37 @@ class _Storage():
             return []
 
         raise Exception("Model output intermediate dirnames not configured.")
+
+    # @staticmethod
+    # def delete_unnecessary_ckpts(
+    #     model_dirname: str,
+    #     prompt: str,
+    #     out_rootpath: Path,
+    # ) -> None:
+    #     result_path = Utils.Storage.build_result_path_by_prompt(
+    #         model_dirname=model_dirname,
+    #         prompt=prompt,
+    #         out_rootpath=out_rootpath,
+    #         assert_exists=True,
+    #     )
+
+    #     ckpts_path = result_path.joinpath("ckpts")
+    #     assert ckpts_path.exists()
+    #     assert ckpts_path.is_dir()
+    #     ### "last.ckpt" is a symlink to the last checkpoint.
+    #     last_ckpt_path = ckpts_path.joinpath("last.ckpt")
+    #     assert last_ckpt_path.exists()
+    #     assert last_ckpt_path.is_symlink()  ### INFO: notice this ...
+
+    #     ckpts_names_to_keep = [
+    #         "last.ckpt",
+    #         Path(os.readlink(last_ckpt_path)).name,
+    #     ]
+
+    #     for ckpt_path in ckpts_path.glob("*.ckpt"):
+    #         if ckpt_path.name in ckpts_names_to_keep:
+    #             continue
+    #         ckpt_path.unlink()
 
 
 ###
