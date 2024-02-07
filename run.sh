@@ -23,11 +23,11 @@ OUT_DIR="${ROOT_DIR}/metrics/T3Bench/${PROMPT}"
 #   --source-path "${SOURCE_DIR}/Threestudio-Fantasia3D/" \
 #   --out-path "${OUT_DIR}"
 
-### ShapeE
+### ShapE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
   --model "shap-e" \
   --prompt-file $PROMPT_FILE \
-  --source-path "${SOURCE_DIR}/OpenAI-ShapeE/" \
+  --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
   --out-path "${OUT_DIR}"
 
 ### PointE
@@ -48,11 +48,11 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
 #   --source-path "${SOURCE_DIR}/Threestudio-Fantasia3D/" \
 #   --out-path "${OUT_DIR}"
 
-### ShapeE
+### ShapE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
   --model "shap-e" \
   --prompt-file $PROMPT_FILE \
-  --source-path "${SOURCE_DIR}/OpenAI-ShapeE/" \
+  --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
   --out-path "${OUT_DIR}"
 
 ### PointE
