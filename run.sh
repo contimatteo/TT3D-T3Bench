@@ -39,7 +39,6 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
   --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
   --out-path "${OUT_DIR}" \
   --skip-existing-renderings \
-  --skip-existing-captions \
   --skip-existing-scores
 
 ###
@@ -60,6 +59,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
   --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
   --out-path "${OUT_DIR}" \
   --skip-existing-renderings \
+  --skip-existing-captions \
   --skip-existing-scores
 
 ### PointE
