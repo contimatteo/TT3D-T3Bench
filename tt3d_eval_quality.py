@@ -55,7 +55,7 @@ def _run_mesh_rendering_script(
     )
 
     ### TODO: improve this logic ...
-    os.system(
+    _ = os.system(
         f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
     )
 
