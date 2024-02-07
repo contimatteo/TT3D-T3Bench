@@ -2,27 +2,62 @@
 
 exit 0
 
+GPU=0
+PROMPT="test_t3bench_n1"
+
+ROOT_DIR="/media/data2/mconti/TT3D"
+PROMPT_DIR="${ROOT_DIR}/prompts"
+SOURCE_DIR="${ROOT_DIR}/outputs/${PROMPT}"
+PROMPT_FILE="${PROMPT_DIR}/${PROMPT}.txt"
+OUT_DIR="${ROOT_DIR}/metrics/T3Bench/${PROMPT}"
+
+
 ###
 ### QUALITY EVALUATION
 ###
 
-CUDA_VISIBLE_DEVICES=3 python3 tt3d_eval_quality.py \
-  --model "fantasia3d" \
-  --prompt-file /media/data2/mconti/TT3D/prompts/test.v1.n2.txt \
-  --source-path /media/data2/mconti/TT3D/models/Threestudio-Fantasia3D/outputs \
-  --out-path /media/data2/mconti/TT3D/metrics/T3Bench/fantasia3d \
-  --skip-existing-renderings \
-  --skip-existing-scores
+### Fantasia3D
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "fantasia3d" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${SOURCE_DIR}/Threestudio-Fantasia3D/" \
+#   --out-path "${OUT_DIR}"
+
+### ShapeE
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+  --model "shap-e" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${SOURCE_DIR}/OpenAI-ShapeE/" \
+  --out-path "${OUT_DIR}"
+
+### PointE
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+  --model "point-e" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
+  --out-path "${OUT_DIR}"
 
 ###
 ### ALIGNMENT EVALUATION
 ###
 
-CUDA_VISIBLE_DEVICES=3 python3 tt3d_eval_alignment.py \
-  --model "fantasia3d" \
-  --prompt-file /media/data2/mconti/TT3D/prompts/test.v1.n2.txt \
-  --source-path /media/data2/mconti/TT3D/models/Threestudio-Fantasia3D/outputs \
-  --out-path /media/data2/mconti/TT3D/metrics/T3Bench/fantasia3d \
-  --skip-existing-renderings \
-  --skip-existing-captions \
-  --skip-existing-scores
+### Fantasia3D
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "fantasia3d" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${SOURCE_DIR}/Threestudio-Fantasia3D/" \
+#   --out-path "${OUT_DIR}"
+
+### ShapeE
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+  --model "shap-e" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${SOURCE_DIR}/OpenAI-ShapeE/" \
+  --out-path "${OUT_DIR}"
+
+### PointE
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+  --model "point-e" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
+  --out-path "${OUT_DIR}"

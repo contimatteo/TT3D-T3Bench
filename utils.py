@@ -104,19 +104,31 @@ class _Prompt():
 
 
 class _Configs():
-    MODELS_SUPPORTED: List[str] = ["dreamfusion-sd", "fantasia3d"]
+    MODELS_SUPPORTED: List[str] = [
+        "point-e",
+        "shap-e",
+        "dreamfusion-sd",
+        "dreamfusion-if",
+        "fantasia3d",
+        "prolificdreamer",
+        "magic3d",
+        "textmesh-sd",
+        "textmesh-if",
+        "hifa",
+    ]
 
-    # @classmethod
-    # def model_name_to_output_model_dir_name(cls, model: str) -> str:
-    #     """
-    #     In some cases the model name is different from the model output directory name.
-    #     """
-    #     assert isinstance(model, str)
-    #     assert len(model) > 0
-    #     assert model in cls.MODELS_SUPPORTED
-    #     if model == "dreamfusion-sd":
-    #         return "dreamfusion-sd"
-    #     raise NotImplementedError("Model name not supported.")
+
+# @classmethod
+# def model_name_to_output_model_dir_name(cls, model: str) -> str:
+#     """
+#     In some cases the model name is different from the model output directory name.
+#     """
+#     assert isinstance(model, str)
+#     assert len(model) > 0
+#     assert model in cls.MODELS_SUPPORTED
+#     if model == "dreamfusion-sd":
+#         return "dreamfusion-sd"
+#     raise NotImplementedError("Model name not supported.")
 
 
 class _Storage():
@@ -171,34 +183,6 @@ class _Storage():
             if ckpt_path.name in ckpts_names_to_keep:
                 continue
             ckpt_path.unlink()
-
-    @staticmethod
-    def get_model_final_dirname_from_id(model: str) -> str:
-        assert isinstance(model, str)
-        assert len(model) > 0
-        assert model in Utils.Configs.MODELS_SUPPORTED
-
-        if model == "dreamfusion-sd":
-            return "dreamfusion-sd"
-
-        if model == "fantasia3d":
-            return "fantasia3d-texture"
-
-        raise Exception("Model output final dirname not configured.")
-
-    @staticmethod
-    def get_model_intermediate_dirnames_from_id(model: str) -> List[str]:
-        assert isinstance(model, str)
-        assert len(model) > 0
-        assert model in Utils.Configs.MODELS_SUPPORTED
-
-        if model == "dreamfusion-sd":
-            return []
-
-        if model == "fantasia3d":
-            return ["fantasia3d"]
-
-        raise Exception("Model output intermediate dirnames not configured.")
 
     @classmethod
     def build_result_final_export_path(
@@ -317,6 +301,65 @@ class _Storage():
             assert out_alignment_scores_filepath.is_file()
 
         return out_alignment_scores_filepath
+
+    #
+
+    @staticmethod
+    def get_model_final_dirname_from_id(model: str) -> str:
+        assert isinstance(model, str)
+        assert len(model) > 0
+        assert model in Utils.Configs.MODELS_SUPPORTED
+
+        if model == "dreamfusion-sd":
+            return "dreamfusion-sd"
+        if model == "dreamfusion-if":
+            return "dreamfusion-if"
+
+        if model == "fantasia3d":
+            return "fantasia3d-texture"
+
+        if model == "prolificdreamer":
+            return "prolificdreamer-texture"
+
+        if model == "magic3d":
+            return "magic3d-refine-sd"
+
+        if model == "textmesh-sd":
+            return "textmesh-sd"
+        if model == "textmesh-if":
+            return "textmesh-if"
+
+        if model == "hifa":
+            return "hifa"
+
+        raise Exception("Model output final dirname not configured.")
+
+    @staticmethod
+    def get_model_intermediate_dirnames_from_id(model: str) -> List[str]:
+        assert isinstance(model, str)
+        assert len(model) > 0
+        assert model in Utils.Configs.MODELS_SUPPORTED
+
+        if model == "dreamfusion-sd" or model == "dreamfusion-if":
+            return []
+
+        if model == "fantasia3d":
+            return ["fantasia3d"]
+
+        if model == "prolificdreamer":
+            return ["prolificdreamer", "prolificdreamer-geometry"]
+
+        if model == "magic3d":
+            # return ["magic3d-coarse-if"]
+            return ["magic3d-coarse-sd"]
+
+        if model == "textmesh-sd" or model == "textmesh-if":
+            return []
+
+        if model == "hifa":
+            return []
+
+        raise Exception("Model output intermediate dirnames not configured.")
 
 
 ###
