@@ -47,7 +47,7 @@ def _run_mesh_rendering_script(
 
     #
 
-    source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
+    source_result_objmodel_path = Utils.Storage.build_result_export_obj_path(
         model=model,
         prompt=prompt,
         out_rootpath=source_rootpath,

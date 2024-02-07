@@ -176,7 +176,7 @@ class _Storage():
         return out_path
 
     @classmethod
-    def build_result_final_export_path(
+    def build_result_export_path(
         cls,
         model: str,
         prompt: str,
@@ -218,14 +218,14 @@ class _Storage():
         return out_path
 
     @classmethod
-    def build_result_final_export_obj_path(
+    def build_result_export_obj_path(
         cls,
         model: str,
         prompt: str,
         out_rootpath: Path,
         assert_exists: bool,
     ) -> Path:
-        result_export_path = cls.build_result_final_export_path(
+        result_export_path = cls.build_result_export_path(
             model=model,
             prompt=prompt,
             out_rootpath=out_rootpath,
