@@ -196,7 +196,7 @@ class _Storage():
 
         export_candidate_paths: List[Path] = []
         # for export_candidate_path in result_save_path.glob("it*-export"):
-        for export_candidate_path in result_save_path.glob("export"):
+        for export_candidate_path in result_save_path.glob("*export"):
             if not export_candidate_path.is_dir():
                 continue
             export_candidate_paths.append(export_candidate_path)
