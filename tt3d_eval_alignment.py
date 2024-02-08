@@ -1,4 +1,5 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
+from typing import Any, Tuple
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
@@ -46,14 +47,24 @@ openai.api_base = OPENAI_ENDPOINT
 openai.api_key = OPENAI_KEY
 openai.api_version = "2023-05-15"
 
-blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
-    name='blip2_t5',
-    model_type='pretrain_flant5xl',
-    is_eval=True,
-    device=device,
-)
+# blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+#     name='blip2_t5',
+#     model_type='pretrain_flant5xl',
+#     is_eval=True,
+#     device=device,
+# )
 
 ###
+
+
+def _load_models() -> Tuple[Any, Any]:
+    blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+        name='blip2_t5',
+        model_type='pretrain_flant5xl',
+        is_eval=True,
+        device=device,
+    )
+    return blip2_model, blip2_vis_processors
 
 
 def _run_mesh_rendering_script(
@@ -141,7 +152,14 @@ def _clean_merged_caption(merged_caption: str) -> str:
     return caption
 
 
-def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> str:
+def _caption_renderings(
+    model: str,
+    prompt: str,
+    out_rootpath: Path,
+    skip_existing: bool,
+    blip2_model: Any,
+    blip2_vis_processors: Any,
+) -> str:
     out_alignment_captions_filepath = Utils.Storage.build_prompt_alignment_caption_filepath(
         model=model,
         prompt=prompt,
@@ -318,6 +336,8 @@ def main(
 
     #
 
+    blip2_model, blip2_vis_processors = _load_models()
+
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
     print("")
@@ -340,6 +360,8 @@ def main(
             prompt=prompt,
             out_rootpath=out_rootpath,
             skip_existing=skip_existing_captions,
+            blip2_model=blip2_model,
+            blip2_vis_processors=blip2_vis_processors,
         )
 
         _evaluate_alignment(

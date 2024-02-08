@@ -12,6 +12,9 @@ PROMPT_FILE="${ROOT_DIR}/prompts/${PROMPT}.txt"
 OUT_DIR="${ROOT_DIR}/metrics/T3Bench/${PROMPT}"
 
 
+export TOKENIZERS_PARALLELISM=false
+
+
 ###
 
 
