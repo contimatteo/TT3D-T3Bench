@@ -276,6 +276,9 @@ def _evaluate_alignment(
     eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
     eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
     eval_result_text_lines = list(eval_result_text_lines)
+
+    if len(eval_result_text_lines) != 1:
+        print(eval_result_text)
     assert len(eval_result_text_lines) == 1
 
     score_as_str = eval_result_text_lines[0]
