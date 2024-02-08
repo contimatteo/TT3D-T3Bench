@@ -170,7 +170,6 @@ def main(
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
-        print("")
         print(prompt)
 
         _run_mesh_rendering_script(
