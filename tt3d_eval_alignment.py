@@ -278,6 +278,7 @@ def _evaluate_alignment(
     eval_result_text_lines = list(eval_result_text_lines)
 
     if len(eval_result_text_lines) != 1:
+        warnings.warn("Score extraction from LLM failed.")
         print(eval_result_text)
     assert len(eval_result_text_lines) == 1
 
