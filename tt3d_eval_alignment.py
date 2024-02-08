@@ -266,25 +266,28 @@ def _evaluate_alignment(
     # print(prompt_to_gpt4)
     eval_result_text = _openai_gpt_eval_caption(prompt=prompt_to_gpt4, temperature=0)
 
-    ### LLM answer should be in the following format:
-    ### """"
-    ### Score: <int>
-    ### ...
-    ### """"
-    ### Hence, we are looking for the line that starts with "Score: ".
-    eval_result_text_lines = eval_result_text.split("\n")
-    eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
-    eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
-    eval_result_text_lines = list(eval_result_text_lines)
-
-    if len(eval_result_text_lines) != 1:
+    ### LLM answer should be in one the following formats:
+    ### "Score: <int>""
+    ### "<int>""
+    ### Hence, we MAY look for the line that starts with "Score: ".
+    score_as_str: str = None
+    if eval_result_text.isdecimal():
+        score_as_str = eval_result_text
+    elif "Score:" in eval_result_text:
+        eval_result_text_lines = eval_result_text.split("\n")
+        eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
+        eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
+        eval_result_text_lines = list(eval_result_text_lines)
+        if len(eval_result_text_lines) != 1:
+            warnings.warn("Multiple scores detected.")
+            print(eval_result_text)
+        # assert len(eval_result_text_lines) == 1
+        score_as_str = eval_result_text_lines[0]
+        score_as_str = score_as_str.replace("Score:", "")
+    else:
         warnings.warn("Score extraction from LLM failed.")
         print(eval_result_text)
-    assert len(eval_result_text_lines) == 1
 
-    score_as_str = eval_result_text_lines[0]
-
-    score_as_str = score_as_str.replace("Score:", "")
     score_as_str = score_as_str.strip()
     score_as_str = score_as_str.strip(string.ascii_letters)
     score_as_str = score_as_str.replace(" ", "")
