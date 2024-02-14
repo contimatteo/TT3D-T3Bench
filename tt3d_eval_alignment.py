@@ -1,4 +1,5 @@
 ### pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,wrong-import-order
+from typing import Any, Tuple
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
@@ -46,14 +47,24 @@ openai.api_base = OPENAI_ENDPOINT
 openai.api_key = OPENAI_KEY
 openai.api_version = "2023-05-15"
 
-blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
-    name='blip2_t5',
-    model_type='pretrain_flant5xl',
-    is_eval=True,
-    device=device,
-)
+# blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+#     name='blip2_t5',
+#     model_type='pretrain_flant5xl',
+#     is_eval=True,
+#     device=device,
+# )
 
 ###
+
+
+def _load_models() -> Tuple[Any, Any]:
+    blip2_model, blip2_vis_processors, _ = load_model_and_preprocess(
+        name='blip2_t5',
+        model_type='pretrain_flant5xl',
+        is_eval=True,
+        device=device,
+    )
+    return blip2_model, blip2_vis_processors
 
 
 def _run_mesh_rendering_script(
@@ -63,7 +74,8 @@ def _run_mesh_rendering_script(
     out_rootpath: Path,
     skip_existing: bool,
 ) -> None:
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="alignment",
@@ -80,21 +92,17 @@ def _run_mesh_rendering_script(
 
     #
 
-    model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
-    source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
-        result_path=Utils.Storage.build_result_path_by_prompt(
-            model_dirname=model_dirname,
-            prompt=prompt,
-            out_rootpath=source_rootpath,
-            assert_exists=True,
-        ),
+    source_result_objmodel_path = Utils.Storage.build_result_export_obj_path(
+        model=model,
+        prompt=prompt,
+        out_rootpath=source_rootpath,
         assert_exists=True,
     )
 
     ### TODO: improve this logic ...
-    os.system(
-        f'python render/meshrender_cap.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
-    )
+    cmd = f'python render/meshrender_cap.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    # _ = os.system(cmd)
+    _ = os.popen(cmd).read()
 
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
@@ -144,8 +152,16 @@ def _clean_merged_caption(merged_caption: str) -> str:
     return caption
 
 
-def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> str:
+def _caption_renderings(
+    model: str,
+    prompt: str,
+    out_rootpath: Path,
+    skip_existing: bool,
+    blip2_model: Any,
+    blip2_vis_processors: Any,
+) -> str:
     out_alignment_captions_filepath = Utils.Storage.build_prompt_alignment_caption_filepath(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         assert_exists=False,
@@ -160,7 +176,8 @@ def _caption_renderings(model: str, prompt: str, out_rootpath: Path, skip_existi
 
     #
 
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="alignment",
@@ -212,6 +229,7 @@ def _evaluate_alignment(
     assert len(merged_caption) > 0
 
     out_alignment_scores_filepath = Utils.Storage.build_alignment_scores_filepath(
+        model=model,
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
@@ -248,21 +266,28 @@ def _evaluate_alignment(
     # print(prompt_to_gpt4)
     eval_result_text = _openai_gpt_eval_caption(prompt=prompt_to_gpt4, temperature=0)
 
-    ### LLM answer should be in the following format:
-    ### """"
-    ### Score: <int>
-    ### ...
-    ### """"
-    ### Hence, we are looking for the line that starts with "Score: ".
-    eval_result_text_lines = eval_result_text.split("\n")
-    eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
-    eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
-    eval_result_text_lines = list(eval_result_text_lines)
-    assert len(eval_result_text_lines) == 1
+    ### LLM answer should be in one the following formats:
+    ### "Score: <int>""
+    ### "<int>""
+    ### Hence, we MAY look for the line that starts with "Score: ".
+    score_as_str: str = None
+    if eval_result_text.isdecimal():
+        score_as_str = eval_result_text
+    elif "Score:" in eval_result_text:
+        eval_result_text_lines = eval_result_text.split("\n")
+        eval_result_text_lines = map(lambda x: x.strip(), eval_result_text_lines)
+        eval_result_text_lines = filter(lambda x: x.startswith("Score:"), eval_result_text_lines)
+        eval_result_text_lines = list(eval_result_text_lines)
+        if len(eval_result_text_lines) != 1:
+            warnings.warn("Multiple scores detected.")
+            print(eval_result_text)
+        # assert len(eval_result_text_lines) == 1
+        score_as_str = eval_result_text_lines[0]
+        score_as_str = score_as_str.replace("Score:", "")
+    else:
+        warnings.warn("Score extraction from LLM failed.")
+        print(eval_result_text)
 
-    score_as_str = eval_result_text_lines[0]
-
-    score_as_str = score_as_str.replace("Score:", "")
     score_as_str = score_as_str.strip()
     score_as_str = score_as_str.strip(string.ascii_letters)
     score_as_str = score_as_str.replace(" ", "")
@@ -318,6 +343,8 @@ def main(
 
     #
 
+    blip2_model, blip2_vis_processors = _load_models()
+
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
     print("")
@@ -325,7 +352,6 @@ def main(
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
-        print("")
         print(prompt)
 
         _run_mesh_rendering_script(
@@ -341,6 +367,8 @@ def main(
             prompt=prompt,
             out_rootpath=out_rootpath,
             skip_existing=skip_existing_captions,
+            blip2_model=blip2_model,
+            blip2_vis_processors=blip2_vis_processors,
         )
 
         _evaluate_alignment(

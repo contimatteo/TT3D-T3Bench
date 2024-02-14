@@ -30,24 +30,8 @@ def _run_mesh_rendering_script(
     out_rootpath: Path,
     skip_existing: bool,
 ) -> None:
-    model_dirname = Utils.Storage.get_model_final_dirname_from_id(model)
-    # source_result_path = Utils.Storage.build_result_path_by_prompt(
-    #     model_dirname=model_dirname,
-    #     prompt=prompt,
-    #     out_rootpath=source_rootpath,
-    #     assert_exists=True,
-    # )
-    source_result_objmodel_path = Utils.Storage.build_result_final_export_obj_path(
-        result_path=Utils.Storage.build_result_path_by_prompt(
-            model_dirname=model_dirname,
-            prompt=prompt,
-            out_rootpath=source_rootpath,
-            assert_exists=True,
-        ),
-        assert_exists=True,
-    )
-
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="quality",
@@ -55,20 +39,31 @@ def _run_mesh_rendering_script(
     )
 
     if skip_existing and out_prompt_renderings_path.exists():
+        print("Renderings already exists --> ", out_prompt_renderings_path)
         return
 
     if out_prompt_renderings_path.exists():
         shutil.rmtree(out_prompt_renderings_path)
     out_prompt_renderings_path.mkdir(parents=True, exist_ok=True)
 
-    ### TODO: improve this logic ...
-    os.system(
-        f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    #
+
+    source_result_objmodel_path = Utils.Storage.build_result_export_obj_path(
+        model=model,
+        prompt=prompt,
+        out_rootpath=source_rootpath,
+        assert_exists=True,
     )
+
+    ### TODO: improve this logic ...
+    cmd = f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    # _ = os.system(cmd)
+    _ = os.popen(cmd).read()
 
 
 def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> None:
     out_quality_scores_filepath = Utils.Storage.build_quality_scores_filepath(
+        model=model,
         out_rootpath=out_rootpath,
         assert_exists=False,
     )
@@ -90,7 +85,8 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
 
     #
 
-    out_prompt_renderings_path = Utils.Storage.build_renderings_path_by_prompt(
+    out_prompt_renderings_path = Utils.Storage.build_renderings_path(
+        model=model,
         prompt=prompt,
         out_rootpath=out_rootpath,
         eval_type="quality",
@@ -174,7 +170,6 @@ def main(
         if not isinstance(prompt, str) or len(prompt) < 2:
             continue
 
-        print("")
         print(prompt)
 
         _run_mesh_rendering_script(
