@@ -111,7 +111,8 @@ class _Configs():
         "dreamfusion-if",
         "fantasia3d",
         "prolificdreamer",
-        "magic3d",
+        "magic3d-sd",
+        "magic3d-if",
         "textmesh-sd",
         "textmesh-if",
         "hifa",
@@ -347,7 +348,7 @@ class _Storage():
         if model == "prolificdreamer":
             return "prolificdreamer-texture"
 
-        if model == "magic3d":
+        if model == "magic3d-sd" or model == "magic3d-if":
             return "magic3d-refine-sd"
 
         if model == "textmesh-sd":
@@ -375,8 +376,9 @@ class _Storage():
         if model == "prolificdreamer":
             return ["prolificdreamer", "prolificdreamer-geometry"]
 
-        if model == "magic3d":
-            # return ["magic3d-coarse-if"]
+        if model == "magic3d-if":
+            return ["magic3d-coarse-if"]
+        if model == "magic3d-sd":
             return ["magic3d-coarse-sd"]
 
         if model == "textmesh-sd" or model == "textmesh-if":
