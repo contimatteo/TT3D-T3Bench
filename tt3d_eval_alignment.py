@@ -83,7 +83,8 @@ def _run_mesh_rendering_script(
     )
 
     if skip_existing and out_prompt_renderings_path.exists():
-        print("Renderings already exists --> ", out_prompt_renderings_path)
+        # print("Renderings already exists --> ", out_prompt_renderings_path)
+        print("  > renderings already exists")
         return
 
     if out_prompt_renderings_path.exists():
@@ -169,7 +170,8 @@ def _caption_renderings(
     out_alignment_captions_filepath.parent.mkdir(parents=True, exist_ok=True)
 
     if skip_existing and out_alignment_captions_filepath.exists():
-        print("Caption already exists --> ", out_alignment_captions_filepath)
+        # print("Caption already exists --> ", out_alignment_captions_filepath)
+        print("  > caption already exists")
         return out_alignment_captions_filepath.read_text(encoding="utf-8")
 
     out_alignment_captions_filepath.write_text("", encoding="utf-8")
@@ -244,7 +246,7 @@ def _evaluate_alignment(
         if skip_existing and prompt in alignment_scores_map:
             _score = alignment_scores_map[prompt]
             assert isinstance(_score, int)
-            print("score already exists --> ", _score)
+            print("  > score already exists = ", _score)
             return _score
 
     assert isinstance(alignment_scores_map, dict)
@@ -306,7 +308,7 @@ def _evaluate_alignment(
 
     #
 
-    print("score -> ", score)
+    print("  > score = ", score)
 
     alignment_scores_map[prompt] = score
     with open(out_alignment_scores_filepath, 'w', encoding="utf-8") as f:
@@ -354,30 +356,40 @@ def main(
 
         print(prompt)
 
-        _run_mesh_rendering_script(
-            model=model,
-            prompt=prompt,
-            source_rootpath=source_rootpath,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_renderings,
-        )
-
-        merged_caption = _caption_renderings(
-            model=model,
-            prompt=prompt,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_captions,
-            blip2_model=blip2_model,
-            blip2_vis_processors=blip2_vis_processors,
-        )
-
-        _evaluate_alignment(
-            model=model,
-            prompt=prompt,
-            out_rootpath=out_rootpath,
-            merged_caption=merged_caption,
-            skip_existing=skip_existing_scores,
-        )
+        try:
+            _run_mesh_rendering_script(
+                model=model,
+                prompt=prompt,
+                source_rootpath=source_rootpath,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_renderings,
+            )
+            merged_caption = _caption_renderings(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_captions,
+                blip2_model=blip2_model,
+                blip2_vis_processors=blip2_vis_processors,
+            )
+            _evaluate_alignment(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                merged_caption=merged_caption,
+                skip_existing=skip_existing_scores,
+            )
+        except Exception as e:
+            print("")
+            print("")
+            print("========================================")
+            print("Error while running model -> ", model)
+            print("Error while running prompt -> ", prompt)
+            print(e)
+            print("========================================")
+            print("")
+            print("")
+            continue
 
         print("")
     print("")

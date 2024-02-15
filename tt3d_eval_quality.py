@@ -38,8 +38,10 @@ def _run_mesh_rendering_script(
         assert_exists=False,
     )
 
-    if skip_existing and out_prompt_renderings_path.exists():
-        print("Renderings already exists --> ", out_prompt_renderings_path)
+    out_prompt_first_render_filepath = out_prompt_renderings_path.joinpath("000_0.png")
+    if skip_existing and out_prompt_first_render_filepath.exists():
+        # print("  > renderings already exists = ", out_prompt_renderings_path)
+        print("  > renderings already exists")
         return
 
     if out_prompt_renderings_path.exists():
@@ -78,7 +80,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
         if skip_existing and prompt in quality_scores_map:
             _score = quality_scores_map[prompt]
             assert isinstance(_score, int) or isinstance(_score, float)
-            print("score already exists --> ", _score)
+            print("  > score already exists = ", _score)
             return _score
 
     assert isinstance(quality_scores_map, dict)
@@ -128,7 +130,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
     score_idx = scores_idxs[0]  ### scores_idxs[:1] --> scores_idxs[0]
     score = scores[score_idx] * 20 + 50
 
-    print("score -> ", score)
+    print("  > score = ", score)
 
     #     with open(str(out_quality_scores_filepath), 'a+', encoding="utf-8") as f:
     #         f.write(f'{_score:.1f}\t\t{prompt}\n')
@@ -172,15 +174,32 @@ def main(
 
         print(prompt)
 
-        _run_mesh_rendering_script(
-            model=model,
-            prompt=prompt,
-            source_rootpath=source_rootpath,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_renderings,
-        )
+        try:
+            _run_mesh_rendering_script(
+                model=model,
+                prompt=prompt,
+                source_rootpath=source_rootpath,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_renderings,
+            )
 
-        _evaluate_quality(model=model, prompt=prompt, out_rootpath=out_rootpath, skip_existing=skip_existing_scores)
+            _evaluate_quality(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_scores,
+            )
+        except Exception as e:
+            print("")
+            print("")
+            print("========================================")
+            print("Error while running model -> ", model)
+            print("Error while running prompt -> ", prompt)
+            print(e)
+            print("========================================")
+            print("")
+            print("")
+            continue
 
         print("")
     print("")
