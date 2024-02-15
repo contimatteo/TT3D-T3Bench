@@ -105,8 +105,10 @@ class _Prompt():
 
 class _Configs():
     MODELS_SUPPORTED: List[str] = [
-        "point-e",
-        "shap-e",
+        "openai-pointe",
+        "openai-shape",
+        "cap3d-pointe",
+        "cap3d-shape",
         "dreamfusion-sd",
         "dreamfusion-if",
         "fantasia3d",
@@ -331,11 +333,15 @@ class _Storage():
         assert len(model) > 0
         assert model in Utils.Configs.MODELS_SUPPORTED
 
-        if model == "shap-e":
-            return "shap-e"
+        if model == "openai-shape":
+            return "openai-shape"
+        if model == "openai-pointe":
+            return "openai-pointe"
 
-        if model == "point-e":
-            return "point-e"
+        if model == "cap3d-shape":
+            return "cap3d-shape"
+        if model == "cap3d-pointe":
+            return "cap3d-pointe"
 
         if model == "dreamfusion-sd":
             return "dreamfusion-sd"
@@ -348,8 +354,10 @@ class _Storage():
         if model == "prolificdreamer":
             return "prolificdreamer-texture"
 
-        if model == "magic3d-sd" or model == "magic3d-if":
+        if model == "magic3d-sd":
             return "magic3d-refine-sd"
+        if model == "magic3d-if":
+            return "magic3d-refine-if"
 
         if model == "textmesh-sd":
             return "textmesh-sd"
