@@ -105,10 +105,10 @@ class _Prompt():
 
 class _Configs():
     MODELS_SUPPORTED: List[str] = [
-        "openai-pointe",
-        "openai-shape",
-        "cap3d-pointe",
-        "cap3d-shape",
+        "point-e",
+        "shap-e",
+        "cap3d-point-e",
+        "cap3d-shap-e",
         "dreamfusion-sd",
         "dreamfusion-if",
         "fantasia3d",
