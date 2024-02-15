@@ -334,14 +334,14 @@ class _Storage():
         assert model in Utils.Configs.MODELS_SUPPORTED
 
         if model == "openai-shape":
-            return "openai-shape"
+            return "shap-e"
         if model == "openai-pointe":
-            return "openai-pointe"
+            return "point-e"
 
         if model == "cap3d-shape":
-            return "cap3d-shape"
+            return "cap3d-shap-e"
         if model == "cap3d-pointe":
-            return "cap3d-pointe"
+            return "cap3d-point-e"
 
         if model == "dreamfusion-sd":
             return "dreamfusion-sd"
