@@ -23,7 +23,7 @@ echo ">"
 
 ### OpenAI-ShapE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "openai-shape" \
+  --model "shap-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-ShapE/" \
   --out-path "${OUT_DIR}" \
@@ -33,7 +33,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
 
 ### Cap3D-ShapE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "cap3d-shape" \
+  --model "cap3d-shap-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/Cap3D-ShapE/" \
   --out-path "${OUT_DIR}" \
@@ -47,7 +47,7 @@ echo ">"
 
 ### OpenAI-PointE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "openai-pointe" \
+  --model "point-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/OpenAI-PointE/" \
   --out-path "${OUT_DIR}" \
@@ -57,7 +57,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
 
 ### Cap3D-PointE
 CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "cap3d-pointe" \
+  --model "cap3d-point-e" \
   --prompt-file $PROMPT_FILE \
   --source-path "${SOURCE_DIR}/Cap3D-PointE/" \
   --out-path "${OUT_DIR}" \

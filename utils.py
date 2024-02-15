@@ -333,14 +333,14 @@ class _Storage():
         assert len(model) > 0
         assert model in Utils.Configs.MODELS_SUPPORTED
 
-        if model == "openai-shape":
+        if model == "shap-e":
             return "shap-e"
-        if model == "openai-pointe":
+        if model == "point-e":
             return "point-e"
 
-        if model == "cap3d-shape":
+        if model == "cap3d-shap-e":
             return "cap3d-shap-e"
-        if model == "cap3d-pointe":
+        if model == "cap3d-point-e":
             return "cap3d-point-e"
 
         if model == "dreamfusion-sd":
