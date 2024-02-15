@@ -369,65 +369,6 @@ class _Storage():
 
         raise Exception("Model output final dirname not configured.")
 
-    @staticmethod
-    def get_model_intermediate_dirnames_from_id(model: str) -> List[str]:
-        assert isinstance(model, str)
-        assert len(model) > 0
-        assert model in Utils.Configs.MODELS_SUPPORTED
-
-        if model == "dreamfusion-sd" or model == "dreamfusion-if":
-            return []
-
-        if model == "fantasia3d":
-            return ["fantasia3d"]
-
-        if model == "prolificdreamer":
-            return ["prolificdreamer", "prolificdreamer-geometry"]
-
-        if model == "magic3d-if":
-            return ["magic3d-coarse-if"]
-        if model == "magic3d-sd":
-            return ["magic3d-coarse-sd"]
-
-        if model == "textmesh-sd" or model == "textmesh-if":
-            return []
-
-        if model == "hifa":
-            return []
-
-        raise Exception("Model output intermediate dirnames not configured.")
-
-    # @staticmethod
-    # def delete_unnecessary_ckpts(
-    #     model_dirname: str,
-    #     prompt: str,
-    #     out_rootpath: Path,
-    # ) -> None:
-    #     result_path = Utils.Storage.build_result_path_by_prompt(
-    #         model_dirname=model_dirname,
-    #         prompt=prompt,
-    #         out_rootpath=out_rootpath,
-    #         assert_exists=True,
-    #     )
-
-    #     ckpts_path = result_path.joinpath("ckpts")
-    #     assert ckpts_path.exists()
-    #     assert ckpts_path.is_dir()
-    #     ### "last.ckpt" is a symlink to the last checkpoint.
-    #     last_ckpt_path = ckpts_path.joinpath("last.ckpt")
-    #     assert last_ckpt_path.exists()
-    #     assert last_ckpt_path.is_symlink()  ### INFO: notice this ...
-
-    #     ckpts_names_to_keep = [
-    #         "last.ckpt",
-    #         Path(os.readlink(last_ckpt_path)).name,
-    #     ]
-
-    #     for ckpt_path in ckpts_path.glob("*.ckpt"):
-    #         if ckpt_path.name in ckpts_names_to_keep:
-    #             continue
-    #         ckpt_path.unlink()
-
 
 ###
 
