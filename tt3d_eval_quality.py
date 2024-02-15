@@ -40,7 +40,8 @@ def _run_mesh_rendering_script(
 
     out_prompt_first_render_filepath = out_prompt_renderings_path.joinpath("000_0.png")
     if skip_existing and out_prompt_first_render_filepath.exists():
-        print("  > renderings already exists = ", out_prompt_renderings_path)
+        # print("  > renderings already exists = ", out_prompt_renderings_path)
+        print("  > renderings already exists")
         return
 
     if out_prompt_renderings_path.exists():
@@ -129,7 +130,7 @@ def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing
     score_idx = scores_idxs[0]  ### scores_idxs[:1] --> scores_idxs[0]
     score = scores[score_idx] * 20 + 50
 
-    print("score -> ", score)
+    print("  > score = ", score)
 
     #     with open(str(out_quality_scores_filepath), 'a+', encoding="utf-8") as f:
     #         f.write(f'{_score:.1f}\t\t{prompt}\n')
