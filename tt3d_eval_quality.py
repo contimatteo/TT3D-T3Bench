@@ -193,6 +193,7 @@ def main(
             print("")
             print("")
             print("========================================")
+            print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
             print(e)
             print("========================================")
