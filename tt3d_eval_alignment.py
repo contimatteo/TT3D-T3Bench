@@ -356,30 +356,39 @@ def main(
 
         print(prompt)
 
-        _run_mesh_rendering_script(
-            model=model,
-            prompt=prompt,
-            source_rootpath=source_rootpath,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_renderings,
-        )
-
-        merged_caption = _caption_renderings(
-            model=model,
-            prompt=prompt,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_captions,
-            blip2_model=blip2_model,
-            blip2_vis_processors=blip2_vis_processors,
-        )
-
-        _evaluate_alignment(
-            model=model,
-            prompt=prompt,
-            out_rootpath=out_rootpath,
-            merged_caption=merged_caption,
-            skip_existing=skip_existing_scores,
-        )
+        try:
+            _run_mesh_rendering_script(
+                model=model,
+                prompt=prompt,
+                source_rootpath=source_rootpath,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_renderings,
+            )
+            merged_caption = _caption_renderings(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_captions,
+                blip2_model=blip2_model,
+                blip2_vis_processors=blip2_vis_processors,
+            )
+            _evaluate_alignment(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                merged_caption=merged_caption,
+                skip_existing=skip_existing_scores,
+            )
+        except Exception as e:
+            print("")
+            print("")
+            print("========================================")
+            print("Error while running prompt -> ", prompt)
+            print(e)
+            print("========================================")
+            print("")
+            print("")
+            continue
 
         print("")
     print("")

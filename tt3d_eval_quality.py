@@ -174,15 +174,31 @@ def main(
 
         print(prompt)
 
-        _run_mesh_rendering_script(
-            model=model,
-            prompt=prompt,
-            source_rootpath=source_rootpath,
-            out_rootpath=out_rootpath,
-            skip_existing=skip_existing_renderings,
-        )
+        try:
+            _run_mesh_rendering_script(
+                model=model,
+                prompt=prompt,
+                source_rootpath=source_rootpath,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_renderings,
+            )
 
-        _evaluate_quality(model=model, prompt=prompt, out_rootpath=out_rootpath, skip_existing=skip_existing_scores)
+            _evaluate_quality(
+                model=model,
+                prompt=prompt,
+                out_rootpath=out_rootpath,
+                skip_existing=skip_existing_scores,
+            )
+        except Exception as e:
+            print("")
+            print("")
+            print("========================================")
+            print("Error while running prompt -> ", prompt)
+            print(e)
+            print("========================================")
+            print("")
+            print("")
+            continue
 
         print("")
     print("")
