@@ -14,6 +14,9 @@ OUT_DIR="${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
 PROMPT_FILE="${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
 
 
+# export TOKENIZERS_PARALLELISM=false
+
+
 ###
 
 
