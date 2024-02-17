@@ -7,6 +7,7 @@ import ImageReward as RM
 import trimesh
 import warnings
 import json
+import time
 
 from PIL import Image
 
@@ -182,7 +183,6 @@ def main(
                 out_rootpath=out_rootpath,
                 skip_existing=skip_existing_renderings,
             )
-
             _evaluate_quality(
                 model=model,
                 prompt=prompt,
@@ -200,6 +200,8 @@ def main(
             print("")
             print("")
             continue
+
+        time.sleep(5)
 
         print("")
     print("")

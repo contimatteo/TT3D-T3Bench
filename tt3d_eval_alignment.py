@@ -14,6 +14,7 @@ import trimesh
 import string
 import warnings
 import json
+import time
 
 from pathlib import Path
 from tqdm import tqdm
@@ -390,6 +391,8 @@ def main(
             print("")
             print("")
             continue
+
+        time.sleep(5)
 
         print("")
     print("")
