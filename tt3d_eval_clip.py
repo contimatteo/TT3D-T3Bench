@@ -137,7 +137,7 @@ def _evaluate_clip_similarity(
         if skip_existing and prompt in scores_map:
             _score = scores_map[prompt]
             assert isinstance(_score, float)
-            print("  > CLIP (similarity) already exists = ", _score)
+            print("  > SIMILARITY (already exists) = ", _score)
             return _score
 
     assert isinstance(scores_map, dict)
@@ -172,7 +172,7 @@ def _evaluate_clip_similarity(
         clip_model=clip_model,
     )
 
-    print("  > CLIP (similarity) = ", max_score)
+    print("  > SIMILARITY = ", max_score)
 
     scores_map[prompt] = round(float(max_score), 3)
     with open(out_scores_filepath, 'w', encoding="utf-8") as f:
@@ -214,7 +214,7 @@ def _evaluate_clip_rprecision(
         if skip_existing and positive_prompt in scores_map:
             _score = scores_map[positive_prompt]
             assert isinstance(_score, float)
-            print("  > CLIP (rprecision) already exists = ", _score)
+            print("  > R-PRECISION (already exists) = ", _score)
             return _score
 
     assert isinstance(scores_map, dict)
@@ -248,10 +248,11 @@ def _evaluate_clip_rprecision(
             clip_model=clip_model,
         )
         if negative_prompt_similarity > positive_prompt_similarity:
+            print(f"  > R-PRECISION = negative prompt '{negative_prompt}' has greater score.")
             rprecision_score = 0
             break
 
-    print("  > CLIP (rprecision) = ", rprecision_score)
+    print("  > R-PRECISION = ", rprecision_score)
 
     scores_map[positive_prompt] = rprecision_score
     with open(out_scores_filepath, 'w', encoding="utf-8") as f:
