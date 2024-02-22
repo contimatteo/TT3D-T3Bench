@@ -213,7 +213,7 @@ def _evaluate_clip_rprecision(
         scores_map = json.loads(out_scores_filepath.read_text(encoding="UTF-8"))
         if skip_existing and positive_prompt in scores_map:
             _score = scores_map[positive_prompt]
-            assert isinstance(_score, float)
+            assert isinstance(_score, int)
             print("  > R-PRECISION (already exists) = ", _score)
             return _score
 
