@@ -37,6 +37,28 @@ def _load_models() -> Tuple[Any, Any, Any]:
     return tokenizer, processor, model
 
 
+def _load_rendering_images_paths(
+    model: str,
+    prompt: str,
+    rootpath: Path,
+) -> List[Path]:
+    prompt_images_rootpath = Utils.Storage.build_renderings_path(
+        model=model,
+        prompt=prompt,
+        out_rootpath=rootpath,
+        eval_type='alignment',
+        assert_exists=True,
+    )
+    prompt_images_paths = list(prompt_images_rootpath.glob("*.png"))
+    prompt_images_paths = sorted(prompt_images_paths)
+    prompt_images_paths = list(prompt_images_paths)
+
+    ### INFO: T3Bench alignment rendering script outputs 12 images per prompt.
+    assert len(prompt_images_paths) == 12
+
+    return prompt_images_paths
+
+
 _clip_cosine_similarity_fn = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
 
 
@@ -122,19 +144,23 @@ def _evaluate_clip_similarity(
 
     #
 
-    prompt_images_rootpath = Utils.Storage.build_renderings_path(
+    # prompt_images_rootpath = Utils.Storage.build_renderings_path(
+    #     model=model,
+    #     prompt=prompt,
+    #     out_rootpath=source_rootpath,
+    #     eval_type='alignment',
+    #     assert_exists=True,
+    # )
+    # prompt_images_paths = list(prompt_images_rootpath.glob("*.png"))
+    # prompt_images_paths = sorted(prompt_images_paths)
+    # prompt_images_paths = list(prompt_images_paths)
+    # ### INFO: T3Bench alignment rendering script outputs 12 images per prompt.
+    # assert len(prompt_images_paths) == 12
+    prompt_images_paths = _load_rendering_images_paths(
         model=model,
         prompt=prompt,
-        out_rootpath=source_rootpath,
-        eval_type='alignment',
-        assert_exists=True,
+        rootpath=source_rootpath,
     )
-    prompt_images_paths = list(prompt_images_rootpath.glob("*.png"))
-    prompt_images_paths = sorted(prompt_images_paths)
-    prompt_images_paths = list(prompt_images_paths)
-
-    ### INFO: T3Bench alignment rendering script outputs 12 images per prompt.
-    assert len(prompt_images_paths) == 12
 
     #
 
@@ -149,6 +175,85 @@ def _evaluate_clip_similarity(
     print("  > CLIP (similarity) = ", max_score)
 
     scores_map[prompt] = round(float(max_score), 3)
+    with open(out_scores_filepath, 'w', encoding="utf-8") as f:
+        json.dump(scores_map, f, indent=4, ensure_ascii=False)
+
+
+def _evaluate_clip_rprecision(
+    model: str,
+    positive_prompt: str,
+    negative_prompts: List[str],
+    source_rootpath: Path,
+    out_rootpath: Path,
+    clip_tokenizer: Any,
+    clip_processor: Any,
+    clip_model: Any,
+    skip_existing: bool,
+) -> None:
+    assert isinstance(negative_prompts, list)
+    assert len(negative_prompts) > 0
+    assert all([isinstance(p, str) for p in negative_prompts])
+    assert positive_prompt not in negative_prompts
+    assert clip_tokenizer is not None
+    assert clip_processor is not None
+    assert clip_model is not None
+
+    out_scores_filepath = Utils.Storage.build_clip_rprecision_scores_filepath(
+        model=model,
+        rootpath=out_rootpath,
+        assert_exists=False,
+    )
+    out_scores_filepath.parent.mkdir(parents=True, exist_ok=True)
+
+    scores_map: Dict[str, int] = None
+    if not out_scores_filepath.exists():
+        scores_map = {}
+        out_scores_filepath.write_text("{}", encoding="utf-8")
+    else:
+        scores_map = json.loads(out_scores_filepath.read_text(encoding="UTF-8"))
+        if skip_existing and prompt in scores_map:
+            _score = scores_map[prompt]
+            assert isinstance(_score, float)
+            print("  > CLIP (rprecision) already exists = ", _score)
+            return _score
+
+    assert isinstance(scores_map, dict)
+
+    #
+
+    positive_prompt_imgs_paths = _load_rendering_images_paths(
+        model=model,
+        prompt=positive_prompt,
+        rootpath=source_rootpath,
+    )
+
+    positive_prompt_similarity, _, _ = _compute_clip_similarity(
+        prompt=positive_prompt,
+        images_paths=positive_prompt_imgs_paths,
+        clip_tokenizer=clip_tokenizer,
+        clip_processor=clip_processor,
+        clip_model=clip_model,
+    )
+
+    #
+
+    rprecision_score: int = 1
+
+    for negative_prompt in negative_prompts:
+        negative_prompt_similarity, _, _ = _compute_clip_similarity(
+            prompt=negative_prompt,
+            images_paths=positive_prompt_imgs_paths,  ### INFO: NOTICE THIS!
+            clip_tokenizer=clip_tokenizer,
+            clip_processor=clip_processor,
+            clip_model=clip_model,
+        )
+        if negative_prompt_similarity > positive_prompt_similarity:
+            rprecision_score = 0
+            break
+
+    print("  > CLIP (rprecision) = ", rprecision_score)
+
+    scores_map[positive_prompt] = rprecision_score
     with open(out_scores_filepath, 'w', encoding="utf-8") as f:
         json.dump(scores_map, f, indent=4, ensure_ascii=False)
 
@@ -213,33 +318,33 @@ def main(
             print("")
             continue
 
-        # try:
-        #     negative_prompts = deepcopy(prompts)
-        #     assert prompt in negative_prompts
-        #     negative_prompts.remove(prompt)
-        #     assert prompt not in negative_prompts
-        #     _evaluate_clip_precision(
-        #         model=model,
-        #         positive_prompt=prompt,
-        #         negative_prompts=negative_prompts,
-        #         rootpath=out_rootpath,
-        #         clip_tokenizer=clip_tokenizer,
-        #         clip_processor=clip_processor,
-        #         clip_model=clip_model,
-        #         skip_existing=skip_existing,
-        #     )
-        # except Exception as e:  # pylint: disable=broad-except
-        #     print("")
-        #     print("")
-        #     print("========================================")
-        #     print("CLIP PRECISION")
-        #     print("Error while running model -> ", model)
-        #     print("Error while running prompt -> ", prompt)
-        #     print(e)
-        #     print("========================================")
-        #     print("")
-        #     print("")
-        #     continue
+        try:
+            negative_prompts = deepcopy(prompts)
+            assert prompt in negative_prompts
+            negative_prompts.remove(prompt)
+            assert prompt not in negative_prompts
+            _evaluate_clip_rprecision(
+                model=model,
+                positive_prompt=prompt,
+                negative_prompts=negative_prompts,
+                rootpath=out_rootpath,
+                clip_tokenizer=clip_tokenizer,
+                clip_processor=clip_processor,
+                clip_model=clip_model,
+                skip_existing=skip_existing,
+            )
+        except Exception as e:  # pylint: disable=broad-except
+            print("")
+            print("")
+            print("========================================")
+            print("CLIP PRECISION")
+            print("Error while running model -> ", model)
+            print("Error while running prompt -> ", prompt)
+            print(e)
+            print("========================================")
+            print("")
+            print("")
+            continue
 
         print("")
     print("")

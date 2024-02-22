@@ -351,6 +351,25 @@ class _Storage():
             assert out_filepath.is_file()
         return out_filepath
 
+    @classmethod
+    def build_clip_rprecision_scores_filepath(
+        cls,
+        model: str,
+        rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
+        out_clip_scores_path = cls.build_clip_scores_path(
+            model=model,
+            rootpath=rootpath,
+            assert_exists=False,
+        )
+        out_filepath = out_clip_scores_path.joinpath("rprecision.json")
+        if assert_exists:
+            assert out_filepath.exists()
+            assert out_filepath.is_file()
+        return out_filepath
+
     #
 
     @staticmethod
