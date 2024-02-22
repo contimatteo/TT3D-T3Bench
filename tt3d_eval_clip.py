@@ -148,7 +148,7 @@ def _evaluate_clip_similarity(
 
     print("  > CLIP (similarity) = ", max_score)
 
-    scores_map[prompt] = max_score
+    scores_map[prompt] = round(float(max_score), 3)
     with open(out_scores_filepath, 'w', encoding="utf-8") as f:
         json.dump(scores_map, f, indent=4, ensure_ascii=False)
 
