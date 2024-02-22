@@ -40,7 +40,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### OpenAI-ShapE
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "shap-e" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -48,7 +48,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Cap3D-ShapE
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "cap3d-shap-e" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -60,7 +60,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### OpenAI-PointE
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "point-e" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -68,7 +68,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Cap3D-PointE
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "cap3d-point-e" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -80,7 +80,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-DreamFusion(sd)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "dreamfusion-sd" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -88,7 +88,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Threestudio-DreamFusion(if)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "dreamfusion-if" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -100,7 +100,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-Fantasia3D
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "fantasia3d" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -112,7 +112,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-ProlificDreamer
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "prolificdreamer" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -124,7 +124,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-Magic3D(sd)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "magic3d-sd" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -132,7 +132,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Threestudio-Magic3D(if)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "magic3d-if" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -144,7 +144,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-TextMesh(sd)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "textmesh-sd" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -152,7 +152,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Threestudio-TextMesh(if)
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "textmesh-if" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -160,7 +160,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --skip-existing
 
 # ### Threestudio-TextMesh(if)
-### CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+### CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 ###   --model "textmesh-if" \
 ###   --prompt-file $PROMPT_FILE \
 ###   --source-path "${SOURCE_DIR}/" \
@@ -172,7 +172,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### Threestudio-HiFA
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "hifa" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/" \
@@ -184,7 +184,7 @@ CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 # echo ">"
 
 # ### LucidDreamer
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip \
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "luciddreamer" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "/media/data3/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}" \
