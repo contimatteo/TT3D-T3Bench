@@ -23,18 +23,6 @@ export HF_HUB_OFFLINE=1
 ###
 
 
-echo ">"
-echo "> [quality] ShapE"
-echo ">"
-
-### OpenAI-ShapE
-CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
-  --model "shap-e" \
-  --prompt-file $PROMPT_FILE \
-  --source-path "${SOURCE_DIR}/" \
-  --out-path "${OUT_DIR}" \
-  --skip-existing
-
 # echo ">"
 # echo "> [quality] ShapE"
 # echo ">"
