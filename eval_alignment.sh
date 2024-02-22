@@ -8,10 +8,10 @@ ENV="report"
 PROMPT="n100"
 EXPERIMENT_PREFIX="t3bench/single"
 
-ROOT_DIR="/media/data2/mconti/TT3D"
-SOURCE_DIR="${ROOT_DIR}/outputs/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
-OUT_DIR="${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
-PROMPT_FILE="${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
+ROOT_DIR="mconti/TT3D"
+PROMPT_FILE="/media/data2/${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
+SOURCE_DIR="/media/data2/${ROOT_DIR}/outputs/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+OUT_DIR="/media/data3/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
 
 
 # export TOKENIZERS_PARALLELISM=false
@@ -162,11 +162,21 @@ PROMPT_FILE="${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
 #   --model "textmesh-if" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/Threestudio-TextMesh/" \
+#   --source-path "${SOURCE_DIR}/Threestudio-TextMesh-nopriors/" \
 #   --out-path "${OUT_DIR}" \
 #   --skip-existing-renderings \
 #   --skip-existing-captions \
 #   --skip-existing-scores
+
+# ### Threestudio-TextMesh(if)
+### CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+###   --model "textmesh-if" \
+###   --prompt-file $PROMPT_FILE \
+###   --source-path "${SOURCE_DIR}/Threestudio-TextMesh/" \
+###   --out-path "${OUT_DIR}" \
+###   --skip-existing-renderings \
+###   --skip-existing-captions \
+###   --skip-existing-scores
 
 # echo ">"
 # echo "> [quality] Threestudio-HiFA"
@@ -177,6 +187,20 @@ PROMPT_FILE="${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
 #   --model "hifa" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${SOURCE_DIR}/Threestudio-HiFA/" \
+#   --out-path "${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-captions \
+#   --skip-existing-scores
+
+# echo ">"
+# echo "> [quality] LucidDreamer"
+# echo ">"
+
+# ### LucidDreamer
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "luciddreamer" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "/media/data3/${ROOT_DIR}/outputs/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}/LucidDreamer/" \
 #   --out-path "${OUT_DIR}" \
 #   --skip-existing-renderings \
 #   --skip-existing-captions \
