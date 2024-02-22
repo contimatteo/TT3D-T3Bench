@@ -342,7 +342,7 @@ def main(
             print("CLIP PRECISION")
             print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
-            print(e)
+            print(''.join(traceback.format_exception(type(e), e, e.__traceback__)))
             print("========================================")
             print("")
             print("")
