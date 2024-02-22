@@ -10,11 +10,15 @@ from copy import deepcopy
 import argparse
 import json
 import torch
+import traceback
+import numpy as np
 
 # from tqdm import tqdm
 from PIL import Image
-from transformers import CLIPProcessor
+# from transformers import CLIPProcessor
 from transformers import CLIPModel
+from transformers import AutoProcessor
+from transformers import AutoTokenizer
 
 from utils import Utils
 
@@ -25,10 +29,12 @@ device = Utils.Cuda.init()
 ###
 
 
-def _load_models() -> Tuple[Any, Any]:
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+def _load_models() -> Tuple[Any, Any, Any]:
+    tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-base-patch32")
+    processor = AutoProcessor.from_pretrained("openai/clip-vit-base-patch32")
+    # processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-    return processor, model
+    return tokenizer, processor, model
 
 
 _clip_cosine_similarity_fn = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
@@ -37,30 +43,46 @@ _clip_cosine_similarity_fn = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
 def _compute_clip_similarity(
     prompt: str,
     images_paths: List[Path],
+    clip_tokenizer: Any,
     clip_processor: Any,
     clip_model: Any,
-) -> Tuple[float, List[float]]:
+) -> Tuple[float, np.ndarray, int]:
     assert isinstance(images_paths, list)
     assert len(images_paths) > 0
+    assert all([isinstance(img_path, Path) for img_path in images_paths])
+    assert all([img_path.exists() for img_path in images_paths])
+
+    # images_raw = [Image.open(img_path).convert("RGB") for img_path in images_paths]
+    # images_t = clip_processor(images=images_raw, return_tensors='pt')
+    # prompt_t = clip_processor(text=prompt, padding=True, return_tensors='pt')  ### text ids
+    # image_features = clip_model.get_image_features(images_t)
+    # text_features = clip_model.get_text_features(prompt_t)
+    # clip_similarities_t = _clip_cosine_similarity_fn(image_features, text_features)
+    # assert isinstance(clip_similarities_t, torch.Tensor)
+    # clip_similarities = clip_similarities_t.cpu().detach().numpy().tolist()
+    # assert len(clip_similarities) == len(images_paths)
+    # max_clip_similarity = max(clip_similarities)
+    # assert 0.0 <= max_clip_similarity <= 1.0
+    # return max_clip_similarity, clip_similarities
+
+    prompt_t = clip_tokenizer(text=prompt, padding=True, return_tensors='pt')  ### text ids
+    text_features = clip_model.get_text_features(**prompt_t)
 
     images_raw = [Image.open(img_path).convert("RGB") for img_path in images_paths]
-
     images_t = clip_processor(images=images_raw, return_tensors='pt')
-    prompt_t = clip_processor(text=prompt, padding=True, return_tensors='pt')  ### text ids
+    images_features = clip_model.get_image_features(**images_t)
 
-    image_features = clip_model.get_image_features(images_t)
-    text_features = clip_model.get_text_features(prompt_t)
+    similarities_t = _clip_cosine_similarity_fn(images_features, text_features)
+    assert isinstance(similarities_t, torch.Tensor)
 
-    clip_similarities_t = _clip_cosine_similarity_fn(image_features, text_features)
-    assert isinstance(clip_similarities_t, torch.Tensor)
+    similarities_np = similarities_t.cpu().detach().numpy()
+    assert similarities_np.shape[0] == len(images_paths)
 
-    clip_similarities = clip_similarities_t.cpu().detach().numpy().tolist()
-    assert len(clip_similarities) == len(images_paths)
+    max_similarity_idx = similarities_np.argmax()
+    max_similarity = similarities_np.max()
+    assert 0.0 <= max_similarity <= 1.0
 
-    max_clip_similarity = max(clip_similarities)
-    assert 0.0 <= max_clip_similarity <= 1.0
-
-    return max_clip_similarity, clip_similarities
+    return max_similarity, similarities_np, max_similarity_idx
 
 
 def _evaluate_clip_similarity(
@@ -68,10 +90,12 @@ def _evaluate_clip_similarity(
     prompt: str,
     source_rootpath: Path,
     out_rootpath: Path,
+    clip_tokenizer: Any,
     clip_processor: Any,
     clip_model: Any,
     skip_existing: bool,
 ) -> None:
+    assert clip_tokenizer is not None
     assert clip_processor is not None
     assert clip_model is not None
 
@@ -106,15 +130,18 @@ def _evaluate_clip_similarity(
         assert_exists=True,
     )
     prompt_images_paths = list(prompt_images_rootpath.glob("*.png"))
+    prompt_images_paths = sorted(prompt_images_paths)
+    prompt_images_paths = list(prompt_images_paths)
 
     ### INFO: T3Bench alignment rendering script outputs 12 images per prompt.
-    assert len(prompt_images_paths) > 12
+    assert len(prompt_images_paths) == 12
 
     #
 
-    max_score, scores = _compute_clip_similarity(
+    max_score, _, _ = _compute_clip_similarity(
         prompt=prompt,
         images_paths=prompt_images_paths,
+        clip_tokenizer=clip_tokenizer,
         clip_processor=clip_processor,
         clip_model=clip_model,
     )
@@ -150,7 +177,7 @@ def main(
 
     #
 
-    clip_processor, clip_model = _load_models()
+    clip_tokenizer, clip_processor, clip_model = _load_models()
 
     prompts = Utils.Prompt.extract_from_file(filepath=prompt_filepath)
 
@@ -168,6 +195,7 @@ def main(
                 prompt=prompt,
                 source_rootpath=source_rootpath,
                 out_rootpath=out_rootpath,
+                clip_tokenizer=clip_tokenizer,
                 clip_processor=clip_processor,
                 clip_model=clip_model,
                 skip_existing=skip_existing,
@@ -179,7 +207,7 @@ def main(
             print("CLIP SIMILARITY")
             print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
-            print(e)
+            print(''.join(traceback.format_exception(type(e), e, e.__traceback__)))
             print("========================================")
             print("")
             print("")
@@ -195,6 +223,9 @@ def main(
         #         positive_prompt=prompt,
         #         negative_prompts=negative_prompts,
         #         rootpath=out_rootpath,
+        #         clip_tokenizer=clip_tokenizer,
+        #         clip_processor=clip_processor,
+        #         clip_model=clip_model,
         #         skip_existing=skip_existing,
         #     )
         # except Exception as e:  # pylint: disable=broad-except
