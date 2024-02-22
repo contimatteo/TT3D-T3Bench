@@ -114,7 +114,7 @@ def _evaluate_clip_similarity(
         scores_map = json.loads(out_scores_filepath.read_text(encoding="UTF-8"))
         if skip_existing and prompt in scores_map:
             _score = scores_map[prompt]
-            assert isinstance(_score, int)
+            assert isinstance(_score, float)
             print("  > CLIP (similarity) already exists = ", _score)
             return _score
 
