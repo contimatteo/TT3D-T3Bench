@@ -239,6 +239,15 @@ def _evaluate_clip_rprecision(
 
     rprecision_score: int = 1
 
+    ### INFO: alignment images taken from bottom view to remove.
+    ###       (these images may lead to confusion while matching negative prompts)
+    IMGS_NAMES_TO_EXCLUDE: List[str] = ["006", "007"]
+    positive_prompt_imgs_paths = filter(
+        lambda p: p.stem not in IMGS_NAMES_TO_EXCLUDE,
+        positive_prompt_imgs_paths,
+    )
+    assert len(positive_prompt_imgs_paths) == 10
+
     for negative_prompt in negative_prompts:
         negative_prompt_similarity, _, _ = _compute_clip_similarity(
             prompt=negative_prompt,
