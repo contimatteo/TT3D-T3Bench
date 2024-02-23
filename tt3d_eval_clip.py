@@ -6,6 +6,7 @@ load_dotenv()  # take environment variables from .env.
 
 from pathlib import Path
 from copy import deepcopy
+from tqdm import tqdm
 
 import argparse
 import json
@@ -249,7 +250,7 @@ def _evaluate_clip_rprecision(
     positive_prompt_imgs_paths = list(positive_prompt_imgs_paths)
     assert len(positive_prompt_imgs_paths) == 10
 
-    for negative_prompt in negative_prompts:
+    for negative_prompt in tqdm(negative_prompts):
         negative_prompt_similarity, _, _ = _compute_clip_similarity(
             prompt=negative_prompt,
             images_paths=positive_prompt_imgs_paths,  ### INFO: NOTICE THIS!
