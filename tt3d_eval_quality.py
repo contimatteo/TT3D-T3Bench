@@ -8,6 +8,7 @@ import trimesh
 import warnings
 import json
 import time
+import traceback
 
 from PIL import Image
 
@@ -197,7 +198,7 @@ def main(
             print("========================================")
             print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
-            print(e)
+            print(''.join(traceback.format_exception(type(e), e, e.__traceback__)))
             print("========================================")
             print("")
             print("")
