@@ -177,7 +177,7 @@ MEDIA_DATA4="/media/data4"
 ### CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
 ###   --model "textmesh-if" \
 ###   --prompt-file $PROMPT_FILE \
-###   --source-path "${MEDIA_DATA2}/${SOURCE_DIR}/Threestudio-TextMesh/" \
+###   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-TextMesh/" \
 ###   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 ###   --skip-existing-renderings \
 ###   --skip-existing-captions \

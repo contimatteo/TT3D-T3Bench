@@ -11,8 +11,13 @@ EXPERIMENT_PREFIX="t3bench/single"
 # ROOT_DIR="/media/data2/mconti/TT3D"
 ROOT_DIR="mconti/TT3D"
 PROMPT_FILE="/media/data2/${ROOT_DIR}/prompts/${EXPERIMENT_PREFIX}/${PROMPT}.txt"
-SOURCE_DIR="/media/data2/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
-OUT_DIR="/media/data3/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+# SOURCE_DIR="/media/data4/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+# OUT_DIR="/media/data4/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+SOURCE_DIR="${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+OUT_DIR="${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}"
+
+# MEDIA_DATA3="/media/data3"
+MEDIA_DATA4="/media/data4"
 
 export TRANSFORMERS_OFFLINE=1
 export DIFFUSERS_OFFLINE=1
@@ -31,16 +36,16 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "shap-e" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Cap3D-ShapE
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "cap3d-shap-e" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -51,16 +56,16 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "point-e" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Cap3D-PointE
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "cap3d-point-e" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -71,16 +76,16 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "dreamfusion-sd" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Threestudio-DreamFusion(if)
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "dreamfusion-if" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -91,8 +96,8 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "fantasia3d" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -103,8 +108,8 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "prolificdreamer" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -115,16 +120,16 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "magic3d-sd" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Threestudio-Magic3D(if)
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "magic3d-if" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -135,24 +140,24 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "textmesh-sd" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Threestudio-TextMesh(if)
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "textmesh-if" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # ### Threestudio-TextMesh(if)
 ### CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 ###   --model "textmesh-if" \
 ###   --prompt-file $PROMPT_FILE \
-###   --source-path "${SOURCE_DIR}/" \
-###   --out-path "${OUT_DIR}" \
+###   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+###   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 ###   --skip-existing
 
 # echo ">"
@@ -163,8 +168,8 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "hifa" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${SOURCE_DIR}/" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
 # echo ">"
@@ -175,6 +180,6 @@ export HF_HUB_OFFLINE=1
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "luciddreamer" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "/media/data3/${ROOT_DIR}/metrics/${ENV}/${EXPERIMENT_PREFIX}/${PROMPT}" \
-#   --out-path "${OUT_DIR}" \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
