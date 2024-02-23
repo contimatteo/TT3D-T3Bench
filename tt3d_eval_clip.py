@@ -246,6 +246,7 @@ def _evaluate_clip_rprecision(
         lambda p: p.stem not in IMGS_NAMES_TO_EXCLUDE,
         positive_prompt_imgs_paths,
     )
+    positive_prompt_imgs_paths = list(positive_prompt_imgs_paths)
     assert len(positive_prompt_imgs_paths) == 10
 
     for negative_prompt in negative_prompts:
