@@ -63,6 +63,8 @@ def _run_mesh_rendering_script(
     # _ = os.system(cmd)
     _ = os.popen(cmd).read()
 
+    time.sleep(5)
+
 
 def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> None:
     out_quality_scores_filepath = Utils.Storage.build_quality_scores_filepath(
@@ -200,8 +202,6 @@ def main(
             print("")
             print("")
             continue
-
-        time.sleep(5)
 
         print("")
     print("")

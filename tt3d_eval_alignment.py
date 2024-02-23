@@ -106,6 +106,8 @@ def _run_mesh_rendering_script(
     # _ = os.system(cmd)
     _ = os.popen(cmd).read()
 
+    time.sleep(5)
+
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
 def _openai_gpt_merge_captions(prompt, temperature) -> str:
@@ -391,8 +393,6 @@ def main(
             print("")
             print("")
             continue
-
-        time.sleep(5)
 
         print("")
     print("")
