@@ -152,9 +152,9 @@ MEDIA_DATA4="/media/data4"
 ###   --skip-existing-renderings \
 ###   --skip-existing-scores
 
-# ### Threestudio-TextMesh(if)
+# ### Threestudio-TextMesh(if)-nopriors
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
-#   --model "textmesh-if" \
+#   --model "textmesh-if-nopriors" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${MEDIA_DATA2}/${SOURCE_DIR}/Threestudio-TextMesh-nopriors/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
@@ -184,6 +184,32 @@ MEDIA_DATA4="/media/data4"
 #   --skip-existing-scores
 
 # echo ">"
+# echo "> [quality] Threestudio-SJC"
+# echo ">"
+
+# ### Threestudio-SJC
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "sjc" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-SJC/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-scores
+
+# echo ">"
+# echo "> [quality] Threestudio-LatentNerf"
+# echo ">"
+
+# ### Threestudio-LatentNerf
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "latentnerf" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-LatentNerf/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-scores
+
+# echo ">"
 # echo "> [quality] LucidDreamer"
 # echo ">"
 
@@ -192,6 +218,15 @@ MEDIA_DATA4="/media/data4"
 #   --model "luciddreamer" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${MEDIA_DATA3}/${OUT_DIR}/LucidDreamer/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-scores
+
+# ### LucidDreamer-nopriors
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "luciddreamer-nopriors" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${OUT_DIR}/LucidDreamer-nopriors/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing-renderings \
 #   --skip-existing-scores

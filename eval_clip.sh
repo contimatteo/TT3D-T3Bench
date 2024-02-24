@@ -144,9 +144,9 @@ export HF_HUB_OFFLINE=1
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
-# ### Threestudio-TextMesh(if)
+# ### Threestudio-TextMesh(if)-nopriors
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
-#   --model "textmesh-if" \
+#   --model "textmesh-if-nopriors" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
@@ -172,14 +172,46 @@ export HF_HUB_OFFLINE=1
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
-# echo ">"
-# echo "> [quality] LucidDreamer"
-# echo ">"
+echo ">"
+echo "> [quality] Threestudio-SJC"
+echo ">"
 
-# ### LucidDreamer
-# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
-#   --model "luciddreamer" \
-#   --prompt-file $PROMPT_FILE \
-#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
-#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
-#   --skip-existing
+### Threestudio-SJC
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+  --model "sjc" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+  --skip-existing
+
+echo ">"
+echo "> [quality] Threestudio-LatentNerf"
+echo ">"
+
+### Threestudio-LatentNerf
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+  --model "latentnerf" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+  --skip-existing
+
+echo ">"
+echo "> [quality] LucidDreamer"
+echo ">"
+
+### LucidDreamer
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+  --model "luciddreamer" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+  --skip-existing
+
+### LucidDreamer-nopriors
+CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+  --model "luciddreamer-nopriors" \
+  --prompt-file $PROMPT_FILE \
+  --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+  --skip-existing

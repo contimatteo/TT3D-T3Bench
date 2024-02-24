@@ -117,8 +117,12 @@ class _Configs():
         "magic3d-if",
         "textmesh-sd",
         "textmesh-if",
+        "textmesh-if-nopriors",
         "hifa",
+        "sjc",
+        "latentnerf",
         "luciddreamer",
+        "luciddreamer-nopriors",
     ]
 
 
@@ -406,13 +410,19 @@ class _Storage():
 
         if model == "textmesh-sd":
             return "textmesh-sd"
-        if model == "textmesh-if":
+        if model == "textmesh-if" or model == "textmesh-if-nopriors":
             return "textmesh-if"
 
         if model == "hifa":
             return "hifa"
 
-        if model == "luciddreamer":
+        if model == "sjc":
+            return "sjc"
+
+        if model == "latentnerf":
+            return "latentnerf-refine"
+
+        if model == "luciddreamer" or model == "luciddreamer-nopriors":
             return "luciddreamer"
 
         raise Exception("Model output final dirname not configured.")
