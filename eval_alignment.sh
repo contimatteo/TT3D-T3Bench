@@ -167,7 +167,7 @@ MEDIA_DATA4="/media/data4"
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
 #   --model "textmesh-if-nopriors" \
 #   --prompt-file $PROMPT_FILE \
-#   --source-path "${MEDIA_DATA2}/${SOURCE_DIR}/Threestudio-TextMesh-nopriors/" \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-TextMesh-nopriors/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing-renderings \
 #   --skip-existing-captions \
@@ -197,54 +197,54 @@ MEDIA_DATA4="/media/data4"
 #   --skip-existing-captions \
 #   --skip-existing-scores
 
-echo ">"
-echo "> [quality] Threestudio-SJC"
-echo ">"
+# echo ">"
+# echo "> [quality] Threestudio-SJC"
+# echo ">"
 
-### Threestudio-SJC
-CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "sjc" \
-  --prompt-file $PROMPT_FILE \
-  --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-SJC/" \
-  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
-  --skip-existing-renderings \
-  --skip-existing-captions \
-  --skip-existing-scores
+# ### Threestudio-SJC
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "sjc" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-SJC/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-captions \
+#   --skip-existing-scores
 
-echo ">"
-echo "> [quality] Threestudio-LatentNerf"
-echo ">"
+# echo ">"
+# echo "> [quality] Threestudio-LatentNerf"
+# echo ">"
 
-### Threestudio-LatentNerf
-CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "latentnerf" \
-  --prompt-file $PROMPT_FILE \
-  --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-LatentNerf/" \
-  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
-  --skip-existing-renderings \
-  --skip-existing-captions \
-  --skip-existing-scores
+# ### Threestudio-LatentNerf
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "latentnerf" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-LatentNerf/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-captions \
+#   --skip-existing-scores
 
-echo ">"
-echo "> [quality] LucidDreamer"
-echo ">"
+# echo ">"
+# echo "> [quality] LucidDreamer"
+# echo ">"
 
-### LucidDreamer
-CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "luciddreamer" \
-  --prompt-file $PROMPT_FILE \
-  --source-path "${MEDIA_DATA3}/${OUT_DIR}/LucidDreamer/" \
-  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
-  --skip-existing-renderings \
-  --skip-existing-captions \
-  --skip-existing-scores
+# ### LucidDreamer
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "luciddreamer" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/LucidDreamer/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-captions \
+#   --skip-existing-scores
 
-### LucidDreamer-nopriors
-CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
-  --model "luciddreamer-nopriors" \
-  --prompt-file $PROMPT_FILE \
-  --source-path "${MEDIA_DATA3}/${OUT_DIR}/LucidDreamer-nopriors/" \
-  --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
-  --skip-existing-renderings \
-  --skip-existing-captions \
-  --skip-existing-scores
+# ### LucidDreamer-nopriors
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_alignment.py \
+#   --model "luciddreamer-nopriors" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/LucidDreamer-nopriors/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-captions \
+#   --skip-existing-scores
