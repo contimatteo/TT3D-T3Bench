@@ -29,7 +29,7 @@ export HF_HUB_OFFLINE=1
 
 
 # echo ">"
-# echo "> [quality] ShapE"
+# echo "> [clip] ShapE"
 # echo ">"
 
 # ### OpenAI-ShapE
@@ -49,7 +49,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] PointE"
+# echo "> [clip] PointE"
 # echo ">"
 
 # ### OpenAI-PointE
@@ -69,7 +69,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-DreamFusion"
+# echo "> [clip] Threestudio-DreamFusion"
 # echo ">"
 
 # ### Threestudio-DreamFusion(sd)
@@ -89,7 +89,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-Fantasia3D"
+# echo "> [clip] Threestudio-Fantasia3D"
 # echo ">"
 
 # ### Threestudio-Fantasia3D
@@ -101,7 +101,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-ProlificDreamer"
+# echo "> [clip] Threestudio-ProlificDreamer"
 # echo ">"
 
 # ### Threestudio-ProlificDreamer
@@ -113,7 +113,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-Magic3D"
+# echo "> [clip] Threestudio-Magic3D"
 # echo ">"
 
 # ### Threestudio-Magic3D(sd)
@@ -133,7 +133,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-TextMesh"
+# echo "> [clip] Threestudio-TextMesh"
 # echo ">"
 
 # ### Threestudio-TextMesh(sd)
@@ -161,7 +161,7 @@ export HF_HUB_OFFLINE=1
 ###   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-HiFA"
+# echo "> [clip] Threestudio-HiFA"
 # echo ">"
 
 # ### Threestudio-HiFA
@@ -173,7 +173,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-SJC"
+# echo "> [clip] Threestudio-SJC"
 # echo ">"
 
 # ### Threestudio-SJC
@@ -185,7 +185,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] Threestudio-LatentNerf"
+# echo "> [clip] Threestudio-LatentNerf"
 # echo ">"
 
 # ### Threestudio-LatentNerf
@@ -197,7 +197,7 @@ export HF_HUB_OFFLINE=1
 #   --skip-existing
 
 # echo ">"
-# echo "> [quality] LucidDreamer"
+# echo "> [clip] LucidDreamer"
 # echo ">"
 
 # ### LucidDreamer
