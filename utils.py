@@ -117,21 +117,16 @@ class _Configs():
         "magic3d-if",
         "textmesh-sd",
         "textmesh-if",
+        "textmesh-if-nopriors",
         "hifa",
+        "sjc",
+        "latentnerf",
+        "luciddreamer",
+        "luciddreamer-nopriors",
     ]
 
 
-# @classmethod
-# def model_name_to_output_model_dir_name(cls, model: str) -> str:
-#     """
-#     In some cases the model name is different from the model output directory name.
-#     """
-#     assert isinstance(model, str)
-#     assert len(model) > 0
-#     assert model in cls.MODELS_SUPPORTED
-#     if model == "dreamfusion-sd":
-#         return "dreamfusion-sd"
-#     raise NotImplementedError("Model name not supported.")
+###
 
 
 class _Storage():
@@ -327,6 +322,60 @@ class _Storage():
 
     #
 
+    @classmethod
+    def build_clip_scores_path(
+        cls,
+        model: str,
+        rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
+        out_path = rootpath.joinpath(model, "scores", "clip")
+        if assert_exists:
+            assert out_path.exists()
+            assert out_path.is_file()
+        return out_path
+
+    @classmethod
+    def build_clip_similarity_scores_filepath(
+        cls,
+        model: str,
+        rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
+        out_clip_scores_path = cls.build_clip_scores_path(
+            model=model,
+            rootpath=rootpath,
+            assert_exists=False,
+        )
+        out_filepath = out_clip_scores_path.joinpath("similarity.json")
+        if assert_exists:
+            assert out_filepath.exists()
+            assert out_filepath.is_file()
+        return out_filepath
+
+    @classmethod
+    def build_clip_rprecision_scores_filepath(
+        cls,
+        model: str,
+        rootpath: Path,
+        assert_exists: bool,
+    ) -> Path:
+        assert model in _Configs.MODELS_SUPPORTED
+        out_clip_scores_path = cls.build_clip_scores_path(
+            model=model,
+            rootpath=rootpath,
+            assert_exists=False,
+        )
+        out_filepath = out_clip_scores_path.joinpath("rprecision.json")
+        if assert_exists:
+            assert out_filepath.exists()
+            assert out_filepath.is_file()
+        return out_filepath
+
+    #
+
     @staticmethod
     def get_model_final_dirname_from_id(model: str) -> str:
         assert isinstance(model, str)
@@ -361,11 +410,20 @@ class _Storage():
 
         if model == "textmesh-sd":
             return "textmesh-sd"
-        if model == "textmesh-if":
+        if model == "textmesh-if" or model == "textmesh-if-nopriors":
             return "textmesh-if"
 
         if model == "hifa":
             return "hifa"
+
+        if model == "sjc":
+            return "sjc"
+
+        if model == "latentnerf":
+            return "latentnerf-refine"
+
+        if model == "luciddreamer" or model == "luciddreamer-nopriors":
+            return "luciddreamer"
 
         raise Exception("Model output final dirname not configured.")
 

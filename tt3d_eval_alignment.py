@@ -14,6 +14,8 @@ import trimesh
 import string
 import warnings
 import json
+import time
+import traceback
 
 from pathlib import Path
 from tqdm import tqdm
@@ -101,9 +103,11 @@ def _run_mesh_rendering_script(
     )
 
     ### TODO: improve this logic ...
-    cmd = f'python render/meshrender_cap.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    cmd = f'python render/meshrender_cap.py --path "{str(source_result_objmodel_path)}" --name "{str(out_prompt_renderings_path)}"'
     # _ = os.system(cmd)
     _ = os.popen(cmd).read()
+
+    time.sleep(5)
 
 
 @backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.Timeout, openai.error.APIError))
@@ -385,7 +389,7 @@ def main(
             print("========================================")
             print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
-            print(e)
+            print(''.join(traceback.format_exception(type(e), e, e.__traceback__)))
             print("========================================")
             print("")
             print("")

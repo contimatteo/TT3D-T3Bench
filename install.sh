@@ -17,3 +17,4 @@ pip install salesforce-lavis
 pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless 
 pip install opencv-python==4.7.0.72
 pip install python-dotenv spacy
+pip install transformers pillow

@@ -7,6 +7,8 @@ import ImageReward as RM
 import trimesh
 import warnings
 import json
+import time
+import traceback
 
 from PIL import Image
 
@@ -58,9 +60,11 @@ def _run_mesh_rendering_script(
     )
 
     ### TODO: improve this logic ...
-    cmd = f'python render/meshrender.py --path {str(source_result_objmodel_path)} --name {str(out_prompt_renderings_path)}'
+    cmd = f'python render/meshrender.py --path "{str(source_result_objmodel_path)}" --name "{str(out_prompt_renderings_path)}"'
     # _ = os.system(cmd)
     _ = os.popen(cmd).read()
+
+    time.sleep(5)
 
 
 def _evaluate_quality(model: str, prompt: str, out_rootpath: Path, skip_existing: bool) -> None:
@@ -182,7 +186,6 @@ def main(
                 out_rootpath=out_rootpath,
                 skip_existing=skip_existing_renderings,
             )
-
             _evaluate_quality(
                 model=model,
                 prompt=prompt,
@@ -195,7 +198,7 @@ def main(
             print("========================================")
             print("Error while running model -> ", model)
             print("Error while running prompt -> ", prompt)
-            print(e)
+            print(''.join(traceback.format_exception(type(e), e, e.__traceback__)))
             print("========================================")
             print("")
             print("")
