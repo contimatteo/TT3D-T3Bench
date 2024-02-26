@@ -144,6 +144,14 @@ export HF_HUB_OFFLINE=1
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
+# ### Threestudio-TextMesh(sd)-nopriors
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+#   --model "textmesh-sd-nopriors" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing
+
 # ### Threestudio-TextMesh(if)-nopriors
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "textmesh-if-nopriors" \

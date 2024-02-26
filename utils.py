@@ -116,6 +116,7 @@ class _Configs():
         "magic3d-sd",
         "magic3d-if",
         "textmesh-sd",
+        "textmesh-sd-nopriors",
         "textmesh-if",
         "textmesh-if-nopriors",
         "hifa",
@@ -408,7 +409,7 @@ class _Storage():
         if model == "magic3d-if":
             return "magic3d-refine-if"
 
-        if model == "textmesh-sd":
+        if model == "textmesh-sd" or model == "textmesh-sd-nopriors":
             return "textmesh-sd"
         if model == "textmesh-if" or model == "textmesh-if-nopriors":
             return "textmesh-if"
