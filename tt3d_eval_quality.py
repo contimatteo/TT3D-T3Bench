@@ -59,9 +59,15 @@ def _run_mesh_rendering_script(
         assert_exists=True,
     )
 
+    cmd_script = "meshrender"
+    cmd_path = str(source_result_objmodel_path)
+    cmd_name = str(out_prompt_renderings_path)
+
+    if model.startswith("luciddreamer"):
+        cmd_script = "meshrender_open3d"
+
     ### TODO: improve this logic ...
-    cmd = f'python render/meshrender.py --path "{str(source_result_objmodel_path)}" --name "{str(out_prompt_renderings_path)}"'
-    # _ = os.system(cmd)
+    cmd = f'python render/{cmd_script}.py --path "{cmd_path}" --name "{cmd_name}"'
     _ = os.popen(cmd).read()
 
     time.sleep(5)
