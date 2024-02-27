@@ -11,6 +11,7 @@ from copy import deepcopy
 from PIL import Image
 import imageio
 import open3d as o3d
+from pathlib import Path
 
 import argparse
 
@@ -19,20 +20,20 @@ parser.add_argument('--path', type=str, required=True)
 parser.add_argument('--name', type=str)
 args = parser.parse_args()
 
-obj_path = args.path
-# print(obj_path, "???")
+args_path = Path(args.path)
+args_name = Path(args.name)
 
 # load mesh
 try:
-    # mesh = trimesh.load(obj_path, force='mesh')
-    o3d_mesh: o3d.geometry.TriangleMesh = o3d.io.read_triangle_mesh(obj_path)
+    # mesh = trimesh.load(str(args_path), force='mesh')
+    o3d_mesh: o3d.geometry.TriangleMesh = o3d.io.read_triangle_mesh(str(args_path))
     assert o3d_mesh.has_vertex_colors()
     assert o3d_mesh.has_vertex_normals()
 except Exception as e:    
-    icosphere = trimesh.creation.icosphere(subdivisions=0)
-    for idx, v in enumerate(icosphere.vertices):
-        color = Image.fromarray(np.zeros((512, 512, 3)).astype(np.uint8))
-        imageio.imwrite(f'{args.name}/{idx:03d}.png', color)
+    # icosphere = trimesh.creation.icosphere(subdivisions=0)
+    # for idx, v in enumerate(icosphere.vertices):
+    #     color = Image.fromarray(np.zeros((512, 512, 3)).astype(np.uint8))
+    #     imageio.imwrite(f'{args.name}/{idx:03d}.png', color)
     exit(0)
 
 vertices = np.asarray(o3d_mesh.vertices)
@@ -87,4 +88,5 @@ for idx, v in enumerate(icosphere.vertices):
 
     # convert color to PIL image
     color = Image.fromarray(color.astype(np.uint8))
-    imageio.imwrite(f'{args.name}/{idx:03d}.png', color)
+    # imageio.imwrite(f'{args.name}/{idx:03d}.png', color)
+    imageio.imwrite(str(args_name.joinpath(f'{idx:03d}.png')), color)

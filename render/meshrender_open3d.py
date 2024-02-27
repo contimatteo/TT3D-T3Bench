@@ -21,7 +21,6 @@ parser.add_argument('--path', type=str, required=True)
 parser.add_argument('--name', type=str)
 args = parser.parse_args()
 
-# obj_path = args.path
 args_path = Path(args.path)
 args_name = Path(args.name)
 
