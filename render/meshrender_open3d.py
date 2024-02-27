@@ -12,6 +12,7 @@ from PIL import Image
 from tqdm import tqdm
 import imageio
 import open3d as o3d
+from pathlib import Path
 
 import argparse
 
@@ -20,20 +21,22 @@ parser.add_argument('--path', type=str, required=True)
 parser.add_argument('--name', type=str)
 args = parser.parse_args()
 
-obj_path = args.path
+# obj_path = args.path
+args_path = Path(args.path)
+args_name = Path(args.name)
 
 # load mesh
 try:
-    # mesh = trimesh.load(obj_path)
-    o3d_mesh: o3d.geometry.TriangleMesh = o3d.io.read_triangle_mesh(obj_path)
+    # mesh = trimesh.load(str(args_path))
+    o3d_mesh: o3d.geometry.TriangleMesh = o3d.io.read_triangle_mesh(str(args_path))
     assert o3d_mesh.has_vertex_colors()
     assert o3d_mesh.has_vertex_normals()
 except:  ### pylint: disable=bare-except
     icosphere = trimesh.creation.icosphere(subdivisions=2)
-    for idx, v in enumerate(icosphere.vertices):
-        for cam_idx in range(5):
-            color = Image.fromarray(np.zeros((512, 512, 3)).astype(np.uint8))
-            imageio.imwrite(f'{args.name}/{idx:03d}_{cam_idx}.png', color)
+    # for idx, v in enumerate(icosphere.vertices):
+    #     for cam_idx in range(5):
+    #         color = Image.fromarray(np.zeros((512, 512, 3)).astype(np.uint8))
+    #         imageio.imwrite(f'{args.name}/{idx:03d}_{cam_idx}.png', color)
     exit(0)
 
 vertices = np.asarray(o3d_mesh.vertices)
@@ -92,6 +95,7 @@ for idx, v in tqdm(enumerate(icosphere.vertices)):
 
         # convert color to PIL image
         color = Image.fromarray(color.astype(np.uint8))
-        imageio.imwrite(f'{args.name}/{idx:03d}_{cam_idx}.png', color)
+        # imageio.imwrite(f'{args.name}/{idx:03d}_{cam_idx}.png', color)
+        imageio.imwrite(str(args_name.joinpath(f'{idx:03d}_{cam_idx}.png')), color)
 
         r.delete()
