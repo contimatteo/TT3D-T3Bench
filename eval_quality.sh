@@ -104,6 +104,15 @@ MEDIA_DATA4="/media/data4"
 #   --skip-existing-renderings \
 #   --skip-existing-scores
 
+# ### Threestudio-Fantasia3D-nopriors
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "fantasia3d-nopriors" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-Fantasia3D-nopriors/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-scores
+
 # echo ">"
 # echo "> [quality] Threestudio-ProlificDreamer"
 # echo ">"
@@ -113,6 +122,15 @@ MEDIA_DATA4="/media/data4"
 #   --model "prolificdreamer" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${MEDIA_DATA2}/${SOURCE_DIR}/Threestudio-ProlificDreamer/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing-renderings \
+#   --skip-existing-scores
+
+# ### Threestudio-ProlificDreamer-lrx1
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_quality.py \
+#   --model "prolificdreamer-lrx1" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA3}/${SOURCE_DIR}/Threestudio-ProlificDreamer-lrx1/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing-renderings \
 #   --skip-existing-scores

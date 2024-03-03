@@ -112,7 +112,9 @@ class _Configs():
         "dreamfusion-sd",
         "dreamfusion-if",
         "fantasia3d",
+        "fantasia3d-nopriors",
         "prolificdreamer",
+        "prolificdreamer-lrx1",
         "magic3d-sd",
         "magic3d-if",
         "textmesh-sd",
@@ -398,10 +400,10 @@ class _Storage():
         if model == "dreamfusion-if":
             return "dreamfusion-if"
 
-        if model == "fantasia3d":
+        if model == "fantasia3d" or model=="fantasia3d-nopriors":
             return "fantasia3d-texture"
 
-        if model == "prolificdreamer":
+        if model == "prolificdreamer" or model=="prolificdreamer-lrx1":
             return "prolificdreamer-texture"
 
         if model == "magic3d-sd":

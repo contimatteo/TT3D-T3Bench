@@ -100,6 +100,14 @@ export HF_HUB_OFFLINE=1
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
 #   --skip-existing
 
+# ### Threestudio-Fantasia3D
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+#   --model "fantasia3d-nopriors" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing
+
 # echo ">"
 # echo "> [clip] Threestudio-ProlificDreamer"
 # echo ">"
@@ -107,6 +115,14 @@ export HF_HUB_OFFLINE=1
 # ### Threestudio-ProlificDreamer
 # CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
 #   --model "prolificdreamer" \
+#   --prompt-file $PROMPT_FILE \
+#   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
+#   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
+#   --skip-existing
+
+# ### Threestudio-ProlificDreamer-lrx1
+# CUDA_VISIBLE_DEVICES=${GPU} python3 tt3d_eval_clip.py \
+#   --model "prolificdreamer-lrx1" \
 #   --prompt-file $PROMPT_FILE \
 #   --source-path "${MEDIA_DATA4}/${SOURCE_DIR}/" \
 #   --out-path "${MEDIA_DATA4}/${OUT_DIR}" \
